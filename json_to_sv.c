@@ -112,7 +112,7 @@ bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) 
 
 
 // Parse JSON file into its corresponding data structures
-void parseJSON(char * jsonstr) {
+void parseJSON(char * jsonstr, bool * ver) {
     jsmntok_t tok[MAX_TOKEN_COUNT];
     unsigned int tokSize = sizeof(tok)/sizeof(tok[0]); // = MAX_TOKEN_COUNT ?
 
@@ -125,11 +125,12 @@ void parseJSON(char * jsonstr) {
         case -1 : fprintf(stderr, "ERROR: Not enough tokens were provided\n"); exit(EXIT_FAILURE);
         case -2 : fprintf(stderr, "ERROR: Invalid character inside JSON string\n"); exit(EXIT_FAILURE);
         case -3 : fprintf(stderr, "ERROR: The string is not a full JSON packet, more bytes expected\n"); exit(EXIT_FAILURE);
-        default : printf("INFO: Valid JSON packet provided\n");
+        default : printf("INFO: Valid JSON file provided\n");
     }
 
     int tokLen = 0;
     int packetIndex = 0;
+    bool firstPacket = true;
     packet packetList[NUM_MAX_PACKETS];
 
     for(int index = 3;; index++) {
@@ -140,7 +141,7 @@ void parseJSON(char * jsonstr) {
             flit tempFlit;
 
             // Constructing flits
-            for(int i = 0; i < NUMBER_OF_FLIT_FIELDS; i++){
+            for(int i = 0; i < NUMBER_OF_FLIT_FIELDS; i++) {
                 index = incUntilString(index, tok, tokSize);
                 tokLen = getTokLen(tok, index);
                 char str[tokLen];
@@ -150,18 +151,9 @@ void parseJSON(char * jsonstr) {
                 char valueStr[dataLen];
                 int value = buildTokInt(tok, jsonstr, index + 1, valueStr, dataLen);
 
-                if(strcmp(str, "data") == 0) {
-                    printf("data value: %d\n", value);
-                    tempFlit.data = value;
-                }
-                else if(strcmp(str, "keep") == 0) {
-                    printf("keep value: %d\n", value);
-                    tempFlit.keep = value;
-                }
-                else if(strcmp(str, "last") == 0) {
-                    printf("last value: %d\n", value);
-                    tempFlit.last = value;
-                }
+                if(strcmp(str, "data") == 0) tempFlit.data = value;
+                else if(strcmp(str, "keep") == 0) tempFlit.keep = value;
+                else if(strcmp(str, "last") == 0) tempFlit.last = value;
                 index++;
             }
             tempPacket.flit_list[flitIndex] = tempFlit;
@@ -169,18 +161,27 @@ void parseJSON(char * jsonstr) {
             tempPacket.num_flits = flitIndex;
         }
 
-        packetList[packetIndex] = tempPacket;
-        packetIndex++;
+        // Make cleaner fix
+        if(!firstPacket) {
+            packetList[packetIndex] = tempPacket;
+            packetIndex++;
+        }
+        else firstPacket = false;
         if(index >= tokSize) break;
     }
     packetList[packetIndex-1].num_flits--;
 
-    // Data checking:
-    for(int n = 0; n < packetIndex; n++) {
-        for(int f = 0; f < packetList[n].num_flits; f++) {
-            printf("Flit %d of Packet %d data: %d\n", f, n, packetList[n].flit_list[f].data);
+    // Verbose
+    if(*ver == true) {
+        for(int i = 0; i < packetIndex; i++) {
+            printf("Packet[%d]\n|\n", i);
+            for(int j = 0; j < packetList[i].num_flits; j++) {
+                printf("|----Flit[%d]\n     |----Data: %d\n     |----Keep: %d\n     |----Last: %d\n",
+                    j, packetList[i].flit_list[j].data, packetList[i].flit_list[j].keep, packetList[i].flit_list[j].last);
+            }
         }
     }
+    return;
 }
 
 
@@ -190,16 +191,27 @@ void parseJSON(char * jsonstr) {
 
 
 int main(int argc, char * argv[]) {
-    if(argc != 2) {
-        fprintf(stderr, "Usage: json_to_sv </path/to/file.json>\n");
+    if(argc == 2) {
+        char * jsonFilePath = argv[1];
+        char jsonstr[BUFFER_SIZE];
+        bool ver = false;
+
+        readFile(jsonFilePath, jsonstr);
+        parseJSON(jsonstr, &ver);
+    }
+    // Verbose
+    else if((argc == 3) && ((strcmp(argv[1],"-v") == 0) || (strcmp(argv[1], "--verbose") == 0))) {
+        char * jsonFilePath = argv[2];
+        char jsonstr[BUFFER_SIZE];
+        bool ver = true;
+
+        readFile(jsonFilePath, jsonstr);
+        parseJSON(jsonstr, &ver);
+    }
+    else {
+        fprintf(stderr, "Usage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n");
         exit(EXIT_FAILURE);
     }
-    
-    char * jsonFilePath = argv[1];
-    char jsonstr[BUFFER_SIZE];
-
-    readFile(jsonFilePath, jsonstr);
-    parseJSON(jsonstr);
 
     return(EXIT_SUCCESS);
 }
