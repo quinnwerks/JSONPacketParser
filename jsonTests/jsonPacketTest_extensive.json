@@ -1,7 +1,7 @@
  {
    "packets": [
      {
-       "flits_2": [
+       "flits": [
          {
            "data": 2000,
            "keep": 1,
@@ -15,7 +15,7 @@
        ]
      },
      {
-       "flits_4": [
+       "flits": [
          {
            "data": 4000,
            "keep": 0,
@@ -39,7 +39,7 @@
        ]
      },
      {
-       "flits_8": [
+       "flits": [
          {
            "data": 8000,
            "keep": 0,
