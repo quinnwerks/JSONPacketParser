@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define JSON_FILE_PATH "./jsonexample.json"
 #define BUFFER_SIZE 5000
 #define MAX_TOKEN_COUNT 128
 #define NUM_MAX_PACKETS 64
@@ -190,11 +189,17 @@ void parseJSON(char * jsonstr) {
  */
 
 
-int main(void) {
+int main(int argc, char * argv[]) {
+    if(argc != 2) {
+        fprintf(stderr, "Usage: json_to_sv </path/to/file.json>\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    char * jsonFilePath = argv[1];
     char jsonstr[BUFFER_SIZE];
-    readFile(JSON_FILE_PATH, jsonstr);
 
+    readFile(jsonFilePath, jsonstr);
     parseJSON(jsonstr);
 
-    return 0;
+    return(EXIT_SUCCESS);
 }
