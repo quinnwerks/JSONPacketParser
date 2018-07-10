@@ -112,7 +112,11 @@ bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) 
 
 
 // Parse JSON file into its corresponding data structures
-void parseJSON(char * jsonstr, bool * ver) {
+void parseJSON(char * jsonFilePath, bool * ver) {
+    
+    char jsonstr[BUFFER_SIZE];
+    readFile(jsonFilePath, jsonstr);
+
     jsmntok_t tok[MAX_TOKEN_COUNT];
     unsigned int tokSize = sizeof(tok)/sizeof(tok[0]); // = MAX_TOKEN_COUNT ?
 
@@ -192,21 +196,13 @@ void parseJSON(char * jsonstr, bool * ver) {
 
 int main(int argc, char * argv[]) {
     if(argc == 2) {
-        char * jsonFilePath = argv[1];
-        char jsonstr[BUFFER_SIZE];
         bool ver = false;
-
-        readFile(jsonFilePath, jsonstr);
-        parseJSON(jsonstr, &ver);
+        parseJSON(argv[1], &ver);
     }
     // Verbose
     else if((argc == 3) && ((strcmp(argv[1],"-v") == 0) || (strcmp(argv[1], "--verbose") == 0))) {
-        char * jsonFilePath = argv[2];
-        char jsonstr[BUFFER_SIZE];
         bool ver = true;
-
-        readFile(jsonFilePath, jsonstr);
-        parseJSON(jsonstr, &ver);
+        parseJSON(argv[2], &ver);
     }
     else {
         fprintf(stderr, "Usage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n");
