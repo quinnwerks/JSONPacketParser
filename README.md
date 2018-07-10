@@ -3,6 +3,14 @@ Uses the jsmn parser to parse a json file into a c data structure. This data str
 
 The jsmn JSON parser can be found here: https://zserge.com/jsmn.html
 
+Galapagos can be found here: https://github.com/tarafdar/galapagos
+
+The C program:
+
 Usage: /path/json_to_sv [options] /path/file.json
 
 Options:  -v, --verbose        Show output data structure in the command line
+
+The SV testbenches:
+
+TODO
