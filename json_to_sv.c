@@ -1,8 +1,11 @@
-#include "./JSMN/jsmn.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+
+#include "./JSMN/jsmn.h"
+//#include "svdpi.h"
+//#include "vc_hdrs.h"
 
 #define BUFFER_SIZE 5000
 #define MAX_TOKEN_COUNT 128
@@ -27,7 +30,7 @@ typedef struct Flit {
     int last;
 } flit;
 
-// Struct for packet data (max 24 flits)
+// Struct for packet data (max 23 flits)
 typedef struct Packet {
     struct Flit flit_list[23];
     int num_flits;
@@ -106,7 +109,6 @@ int getFieldType(char * str) {
     else return -1;
 }
 
-
 // Check if new packet (ie next string == "flits")
 bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) {
     while(*p_index < tokSize) {
@@ -130,9 +132,8 @@ bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) 
     return false;
 }
 
-
 // Parse JSON file into its corresponding data structures
-void parseJSON(char * jsonFilePath, int * ver) {
+packet * parseJSON(char * jsonFilePath, int * ver) {
     
     char jsonstr[BUFFER_SIZE];
     readFile(jsonFilePath, jsonstr);
@@ -209,7 +210,8 @@ void parseJSON(char * jsonFilePath, int * ver) {
     
     // Write all flit data to output file file
     makeFile("./outputFiles/testOutput.txt", packetList, packetIndex);
-    return;
+    
+    return(packetList);
 }
 
 
@@ -221,12 +223,12 @@ void parseJSON(char * jsonFilePath, int * ver) {
 int main(int argc, char * argv[]) {
     if(argc == 2) {
         int ver = 0;
-        parseJSON(argv[1], &ver);
+        packet * pList = parseJSON(argv[1], &ver);
     }
     // Verbose
     else if((argc == 3) && ((strcmp(argv[1],"-v") == 0) || (strcmp(argv[1], "--verbose") == 0))) {
         int ver = 1;
-        parseJSON(argv[2], &ver);
+        packet * pList = parseJSON(argv[2], &ver);
     }
     else {
         fprintf(stderr, "Usage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n");
