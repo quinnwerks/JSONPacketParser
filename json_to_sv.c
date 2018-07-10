@@ -54,7 +54,7 @@ void readFile(char * path, char * outputstr) {
     return;
 }
 
-//outputs cleaned packet data structure to a text file
+// Outputs full data structure to text file
 void makeFile(char * path, packet * packetList, int listSize){
     FILE * output_f;
 
@@ -65,12 +65,12 @@ void makeFile(char * path, packet * packetList, int listSize){
 
         for(int j = 0; j < tempPacket.num_flits; j++){         
             flit tempFlit = packetList[i].flit_list[j];
-            fprintf(output_f,"%d,\n%d,\n%d,\n", tempFlit.data, tempFlit.keep, tempFlit.last);
-            //printf("%d,\n%d,\n%d,\n", tempFlit.data, tempFlit.keep, tempFlit.last);
+            fprintf(output_f,"%d\n%d\n%d\n", tempFlit.data, tempFlit.keep, tempFlit.last);
         }
     }
 
     fclose(output_f);
+    printf("\nINFO: Output data structure written to ./outputFiles/testOutput\n\n");
 }
 
 // Increment index until token type is 3 (string)
@@ -149,7 +149,7 @@ void parseJSON(char * jsonFilePath, int * ver) {
         case -1 : fprintf(stderr, "ERROR: Not enough tokens were provided\n"); exit(EXIT_FAILURE);
         case -2 : fprintf(stderr, "ERROR: Invalid character inside JSON string\n"); exit(EXIT_FAILURE);
         case -3 : fprintf(stderr, "ERROR: The string is not a full JSON packet, more bytes expected\n"); exit(EXIT_FAILURE);
-        default : printf("INFO: Valid JSON file provided\n");
+        default : printf("\nINFO: Valid JSON file provided\n");
     }
 
     int tokLen = 0;
@@ -197,6 +197,7 @@ void parseJSON(char * jsonFilePath, int * ver) {
 
     // Verbose
     if(*ver == 1) {
+        printf("\n### Output Data Structure:\n\n");
         for(int i = 0; i < packetIndex; i++) {
             printf("Packet[%d]\n|\n", i);
             for(int j = 0; j < packetList[i].num_flits; j++) {
@@ -206,7 +207,7 @@ void parseJSON(char * jsonFilePath, int * ver) {
         }
     }
     
-    //write cleaned packet output to a file
+    // Write all flit data to output file file
     makeFile("./outputFiles/testOutput.txt", packetList, packetIndex);
     return;
 }
