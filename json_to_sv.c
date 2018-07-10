@@ -207,7 +207,7 @@ void parseJSON(char * jsonFilePath, int * ver) {
     }
     
     //write cleaned packet output to a file
-    makeFile("./output_files/test_output.txt", packetList, packetIndex);
+    makeFile("./outputFiles/testOutput.txt", packetList, packetIndex);
     return;
 }
 
