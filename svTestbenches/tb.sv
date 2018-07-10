@@ -1,23 +1,25 @@
 `timescale 1 ns/ 1ps
 
-
 /*
  *  STRUCTS
  */
 
 
 // Struct for flit data
- typedef struct {
+ typedef struct packed {
     int data;
     int keep;
     int last;
 } flit;
 
-// Struct for packet data (max 24 flits)
-typedef struct {
+// Struct for packet data (max 23 flits)
+typedef struct packed {
     flit [22:0] flit_list;
     int num_flits;
 } packet;
+
+// DPI
+import "DPI-C" function packet parseJSON(input string jsonFilePath, input int ver);
 
 
 /*
@@ -26,8 +28,6 @@ typedef struct {
 
 
 module testbench();
-
-    import "DPI-C" function int parseJSON(output flitData [63:0]);
 
     reg clk;
     reg resetn;
@@ -57,7 +57,13 @@ module testbench();
         clk = 0;
         #5 resetn = 1;
     end
-    
+
+    initial begin
+        string jsonFilePath = "../jsonTests/jsonPacketTest_extensive.json";
+        int ver = 1'd0;
+        packet [63:0] packetList = parseJSON(jsonFilePath, ver);
+    end
+
     initial begin
         #50
 
