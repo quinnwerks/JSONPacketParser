@@ -1,10 +1,33 @@
 `timescale 1 ns/ 1ps
 
 
+/*
+ *  STRUCTS
+ */
+
+
+// Struct for flit data
+ typedef struct {
+    int data;
+    int keep;
+    int last;
+} flit;
+
+// Struct for packet data (max 24 flits)
+typedef struct {
+    flit [22:0] flit_list;
+    int num_flits;
+} packet;
+
+
+/*
+ *  TESTBENCH MODULE
+ */
+
 
 module testbench();
-    
-    import "DPI-C" function void parseJSON(input string jsonFilePath, input int ver);
+
+    import "DPI-C" function int parseJSON(output flitData [63:0]);
 
     reg clk;
     reg resetn;
@@ -194,6 +217,9 @@ design_1 design_1_i
     );
 
 
+/*
+ *  GET TRANSACTION TASK
+ */
 
 
 task gen_transaction(input [63:0] num, input [63:0] data_task, input [7:0] keep_task, input last_task);
