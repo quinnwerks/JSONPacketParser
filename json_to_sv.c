@@ -132,7 +132,7 @@ bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) 
 
 
 // Parse JSON file into its corresponding data structures
-void parseJSON(char * jsonFilePath, bool * ver) {
+void parseJSON(char * jsonFilePath, int * ver) {
     
     char jsonstr[BUFFER_SIZE];
     readFile(jsonFilePath, jsonstr);
@@ -196,7 +196,7 @@ void parseJSON(char * jsonFilePath, bool * ver) {
     packetList[packetIndex-1].num_flits--;
 
     // Verbose
-    if(*ver == true) {
+    if(*ver == 1) {
         for(int i = 0; i < packetIndex; i++) {
             printf("Packet[%d]\n|\n", i);
             for(int j = 0; j < packetList[i].num_flits; j++) {
@@ -219,12 +219,12 @@ void parseJSON(char * jsonFilePath, bool * ver) {
 
 int main(int argc, char * argv[]) {
     if(argc == 2) {
-        bool ver = false;
+        int ver = 0;
         parseJSON(argv[1], &ver);
     }
     // Verbose
     else if((argc == 3) && ((strcmp(argv[1],"-v") == 0) || (strcmp(argv[1], "--verbose") == 0))) {
-        bool ver = true;
+        int ver = 1;
         parseJSON(argv[2], &ver);
     }
     else {
