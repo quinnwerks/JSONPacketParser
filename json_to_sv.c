@@ -12,6 +12,7 @@
 #define OBJECT_TOK 1
 #define PRIMATIVE_TOK 0
 #define NUMBER_OF_FLIT_FIELDS 3
+#define MAX_NUMBER_FLITS 23
 
 
 /*
@@ -40,17 +41,36 @@ typedef struct Packet {
 
 // Read in JSON file
 void readFile(char * path, char * outputstr) {
-    FILE * f;
+    FILE * input_f;
     char c;
     int index;
-    f = fopen(path, "rt");
-    while((c = fgetc(f)) != EOF){
+    input_f = fopen(path, "rt");
+    while((c = fgetc(input_f)) != EOF){
         outputstr[index] = c;
         index++;
     }
     outputstr[index] = '\0';
-    fclose(f);
+    fclose(input_f);
     return;
+}
+
+//outputs cleaned packet data structure to a text file
+void makeFile(char * path, packet * packetList, int listSize){
+    FILE * output_f;
+
+    output_f = fopen(path, "w");
+
+    for(int i = 0; i < listSize; i++){
+        packet tempPacket = packetList[i];
+
+        for(int j = 0; j < tempPacket.num_flits; j++){         
+            flit tempFlit = packetList[i].flit_list[j];
+            fprintf(output_f,"%d,\n%d,\n%d,\n", tempFlit.data, tempFlit.keep, tempFlit.last);
+            //printf("%d,\n%d,\n%d,\n", tempFlit.data, tempFlit.keep, tempFlit.last);
+        }
+    }
+
+    fclose(output_f);
 }
 
 // Increment index until token type is 3 (string)
@@ -185,6 +205,9 @@ void parseJSON(char * jsonFilePath, bool * ver) {
             }
         }
     }
+    
+    //write cleaned packet output to a file
+    makeFile("./output_files/test_output.txt", packetList, packetIndex);
     return;
 }
 
