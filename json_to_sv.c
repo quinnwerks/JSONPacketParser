@@ -217,27 +217,55 @@ void parseJSON(char * jsonFilePath, int * ver, packet extPacketList[]) {
 }
 
 
+void printUsage(){
+    printf("------------------------USAGE------------------------\n");
+    printf("- INPUT FORMAT: [path to executable] [options] [path to json file]\n");
+    printf("-----------------------OPTIONS-----------------------\n");
+    printf("- HELP: -h or --help, prints a usage message\n");
+    printf("- VERBOSE: -v or --verbose, outputs data structure that has been made through parsing\n");   
+    printf("- LOG: -l or --log, writes parsed data to an output file.\n");   
+    return;
+}
+
 /*
  *  MAIN
  */
 
 
 int main(int argc, char * argv[]) {
-    if(argc == 2) {
-        int ver = 0;
-        packet extPacketList[NUM_MAX_PACKETS];
-        parseJSON(argv[1], &ver, extPacketList);
+    int ver = 0;
+    int log = 0;
+    if (argc == 2){
+    }  
+    else if(argc > 2){    
+        for(int i = 1; i < argc - 1; i++){
+            // Verbose
+            if(((strcmp(argv[i],"-v") == 0) || (strcmp(argv[i], "--verbose") == 0))) {
+                ver = 1;
+            }
+            // Help
+            else if(((strcmp(argv[i],"-h") == 0) || (strcmp(argv[i], "--help") == 0))){
+                printUsage();
+            } 
+            else if(((strcmp(argv[i],"-l") == 0) || (strcmp(argv[i], "--log") == 0))){
+                log = 1;
+            } 
+            else if(((strcmp(argv[i],"-lv") == 0) || (strcmp(argv[i], "-vl") == 0))){
+                log = 1;
+                ver = 1;
+            } 
+            else{
+                printf("ERROR: Incorrect input format");
+                printUsage();
+                fprintf(stderr, "Usage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n");
+                exit(EXIT_FAILURE);
+            }
+        }
+        packet * pList = parseJSON(argv[argc-1], &ver, &log);
     }
-    // Verbose
-    else if((argc == 3) && ((strcmp(argv[1],"-v") == 0) || (strcmp(argv[1], "--verbose") == 0))) {
-        int ver = 1;
-        packet extPacketList[NUM_MAX_PACKETS];
-        parseJSON(argv[2], &ver, extPacketList);
-    }
-    else {
+    else{
         fprintf(stderr, "Usage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n");
         exit(EXIT_FAILURE);
     }
-
     return(EXIT_SUCCESS);
 }
