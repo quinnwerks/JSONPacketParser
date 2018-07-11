@@ -133,8 +133,9 @@ bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) 
 }
 
 // Parse JSON file into its corresponding data structures
-packet * parseJSON(char * jsonFilePath, int * ver) {
+void parseJSON(char * jsonFilePath, int * ver, packet extPacketList[]) {
     
+    packet packetList[NUM_MAX_PACKETS];
     char jsonstr[BUFFER_SIZE];
     readFile(jsonFilePath, jsonstr);
 
@@ -156,7 +157,6 @@ packet * parseJSON(char * jsonFilePath, int * ver) {
     int tokLen = 0;
     int packetIndex = 0;
     bool firstPacket = true;
-    packet packetList[NUM_MAX_PACKETS];
 
     for(int index = 3;; index++) {
         int flitIndex = 0;
@@ -196,6 +196,8 @@ packet * parseJSON(char * jsonFilePath, int * ver) {
     }
     packetList[packetIndex-1].num_flits--;
 
+    memcpy(extPacketList, packetList, sizeof(packetList));
+
     // Verbose
     if(*ver == 1) {
         printf("\n### Output Data Structure:\n\n");
@@ -211,7 +213,7 @@ packet * parseJSON(char * jsonFilePath, int * ver) {
     // Write all flit data to output file file
     makeFile("./outputFiles/testOutput.txt", packetList, packetIndex);
     
-    return(packetList);
+    return;
 }
 
 
@@ -223,12 +225,14 @@ packet * parseJSON(char * jsonFilePath, int * ver) {
 int main(int argc, char * argv[]) {
     if(argc == 2) {
         int ver = 0;
-        packet * pList = parseJSON(argv[1], &ver);
+        packet extPacketList[NUM_MAX_PACKETS];
+        parseJSON(argv[1], &ver, extPacketList);
     }
     // Verbose
     else if((argc == 3) && ((strcmp(argv[1],"-v") == 0) || (strcmp(argv[1], "--verbose") == 0))) {
         int ver = 1;
-        packet * pList = parseJSON(argv[2], &ver);
+        packet extPacketList[NUM_MAX_PACKETS];
+        parseJSON(argv[2], &ver, extPacketList);
     }
     else {
         fprintf(stderr, "Usage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n");
