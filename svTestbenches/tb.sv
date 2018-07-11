@@ -1,10 +1,5 @@
 `timescale 1 ns/ 1ps
 
-/*
- *  STRUCTS
- */
-
-
 // Struct for flit data
  typedef struct packed {
     int data;
@@ -21,12 +16,7 @@ typedef struct packed {
 // DPI
 import "DPI-C" function packet parseJSON(input string jsonFilePath, input int ver);
 
-
-/*
- *  TESTBENCH MODULE
- */
-
-
+// Top
 module testbench();
 
     reg clk;
@@ -222,12 +212,7 @@ design_1 design_1_i
         .S_AXI_MEM_1_wvalid(S_AXI_MEM_1_wvalid)
     );
 
-
-/*
- *  GET TRANSACTION TASK
- */
-
-
+// Get transaction task
 task gen_transaction(input [63:0] num, input [63:0] data_task, input [7:0] keep_task, input last_task);
 
   data = data_task;
@@ -239,8 +224,5 @@ task gen_transaction(input [63:0] num, input [63:0] data_task, input [7:0] keep_
   $display("Transaction %d, Data: %h, keep %h, last %b", num, data_task, keep_task, last_task);
   
 endtask
-
-
-
 
 endmodule
