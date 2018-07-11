@@ -42,6 +42,12 @@ typedef struct Packet {
  */
 
 
+// Print help (usage & options)
+void printHelp() {
+	printf("Usage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n  -l, --log            Log output data structure to outputFiles/log.txt\n  -h, --help           Show help\n\n");
+    return;
+}
+
 // Read in JSON file
 void readFile(char * path, char * outputstr) {
     FILE * input_f;
@@ -234,19 +240,10 @@ int main(int argc, char * argv[]) {
     int argIndex = 1;
     bool err = false;
 
-    // No intermediary arguments
-    if(argc == 2) {
-        if((strcmp(argv[1], "--help") == 0) || (strcmp(argv[1], "-h") == 0)) help = 1;
-        else {
-            packet extPacketList[NUM_MAX_PACKETS];
-            parseJSON(argv[1], extPacketList, &ver, &logToFile);
-            return(EXIT_SUCCESS);
-        }
-    }
-    // Intermediary arguments
-    else if(argc > 2) {
-        for (; argIndex < argc - 1; ++argIndex) {
-            if(argv[argIndex][0] == '-') {
+    // Argument checking
+    if(argc > 1) {
+        for (; argIndex < argc; ++argIndex) {
+	    if(argv[argIndex][0] == '-') {
                 int charIndex = 1;
                 if((charIndex < strlen(argv[argIndex])) && (argv[argIndex][charIndex] == '-')) {
                     if(strcmp(argv[argIndex], "--verbose") == 0) ver = 1;
@@ -263,22 +260,31 @@ int main(int argc, char * argv[]) {
             }
         }
     }
-    // Not enough arguments
+    // Incorrect number of arguments
     else err = true;
-        
-    // Error
+    
+    // Error checking
+    if((argv[argc - 1][0] == '-') && ((ver == 1) || (logToFile == 1) || (help == 0))) {
+	fprintf(stderr, "\nERROR: Incorrect number of arguments\n");
+	printHelp();
+	exit(EXIT_FAILURE);
+    }
     if(err) {
-        fprintf(stderr, "\nERROR: Undefined argument\nUsage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n  -l, --log            Log output data structure to outputFiles/log.txt\n  -h, --help           Show help\n\n");
+        fprintf(stderr, "\nERROR: Undefined argument\n");
+	printHelp();
         exit(EXIT_FAILURE);
     }
+
     // Help
     if(help == 1) {
-        printf("\nUsage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n  -l, --log            Log output data structure to outputFiles/log.txt\n  -h, --help           Show help\n\n");
+	printf("\n");
+        printHelp();
         return(EXIT_SUCCESS);
     }
+
     // Arguments accepted, continuing...
     packet extPacketList[NUM_MAX_PACKETS];
-    parseJSON(argv[argIndex], extPacketList, &ver, &logToFile);
+    parseJSON(argv[argc - 1], extPacketList, &ver, &logToFile);
     
     return(EXIT_SUCCESS);
 }
