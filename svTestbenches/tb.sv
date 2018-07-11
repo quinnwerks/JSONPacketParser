@@ -63,10 +63,6 @@ module testbench();
         gen_transaction(64'd3, 64'h5073930200000000, 8'h0f, 1'b1);
     end
     
-
-
-
-
 wire [63:0] data_out;
 wire [7:0] keep_out;
 wire last_out;
@@ -74,7 +70,6 @@ wire valid_out;
 
 wire [47:0] observedAddress_out;
 wire observedAddress_out_valid;
-
 
 /*
 design_1 design_1_i
@@ -100,7 +95,6 @@ design_1 design_1_i
     );
    
 */
-
 
    pr pr_i
        (.ARESETN(resetn),
