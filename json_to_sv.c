@@ -73,7 +73,7 @@ void makeFile(char * path, packet * packetList, int listSize){
     }
 
     fclose(output_f);
-    printf("\nINFO: Output data structure written to ./outputFiles/testOutput\n\n");
+    printf("INFO: Output data structure logged to ./outputFiles/log.txt\n\n");
 }
 
 // Increment index until token type is 3 (string)
@@ -132,8 +132,10 @@ bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) 
     return false;
 }
 
+//     parseJSON(argv[argIndex], extPacketList, &ver, &logToFile);
+
 // Parse JSON file into its corresponding data structures
-void parseJSON(char * jsonFilePath, int * ver, packet extPacketList[]) {
+void parseJSON(char * jsonFilePath, packet extPacketList[], int * ver, int * logToFile) {
     
     packet packetList[NUM_MAX_PACKETS];
     char jsonstr[BUFFER_SIZE];
@@ -151,7 +153,7 @@ void parseJSON(char * jsonFilePath, int * ver, packet extPacketList[]) {
         case -1 : fprintf(stderr, "ERROR: Not enough tokens were provided\n"); exit(EXIT_FAILURE);
         case -2 : fprintf(stderr, "ERROR: Invalid character inside JSON string\n"); exit(EXIT_FAILURE);
         case -3 : fprintf(stderr, "ERROR: The string is not a full JSON packet, more bytes expected\n"); exit(EXIT_FAILURE);
-        default : printf("\nINFO: Valid JSON file provided\n");
+        default : printf("\nINFO: Valid JSON file provided\n\n");
     }
 
     int tokLen = 0;
@@ -200,7 +202,7 @@ void parseJSON(char * jsonFilePath, int * ver, packet extPacketList[]) {
 
     // Verbose
     if(*ver == 1) {
-        printf("\n### Output Data Structure:\n\n");
+        printf("### Output Data Structure:\n\n");
         for(int i = 0; i < packetIndex; i++) {
             printf("Packet[%d]\n|\n", i);
             for(int j = 0; j < packetList[i].num_flits; j++) {
@@ -208,11 +210,14 @@ void parseJSON(char * jsonFilePath, int * ver, packet extPacketList[]) {
                     j, packetList[i].flit_list[j].data, packetList[i].flit_list[j].keep, packetList[i].flit_list[j].last);
             }
         }
+        printf("\n");
     }
     
     // Write all flit data to output file file
-    makeFile("./outputFiles/testOutput.txt", packetList, packetIndex);
-    
+    if(*logToFile == 1) {
+        makeFile("./outputFiles/log.txt", packetList, packetIndex);
+    }
+
     return;
 }
 
@@ -223,21 +228,57 @@ void parseJSON(char * jsonFilePath, int * ver, packet extPacketList[]) {
 
 
 int main(int argc, char * argv[]) {
+    int ver = 0;
+    int logToFile = 0;
+    int help = 0;
+    int argIndex = 1;
+    bool err = false;
+
+    // No intermediary arguments
     if(argc == 2) {
-        int ver = 0;
-        packet extPacketList[NUM_MAX_PACKETS];
-        parseJSON(argv[1], &ver, extPacketList);
+        if((strcmp(argv[1], "--help") == 0) || (strcmp(argv[1], "-h") == 0)) help = 1;
+        else {
+            packet extPacketList[NUM_MAX_PACKETS];
+            parseJSON(argv[1], extPacketList, &ver, &logToFile);
+            return(EXIT_SUCCESS);
+        }
     }
-    // Verbose
-    else if((argc == 3) && ((strcmp(argv[1],"-v") == 0) || (strcmp(argv[1], "--verbose") == 0))) {
-        int ver = 1;
-        packet extPacketList[NUM_MAX_PACKETS];
-        parseJSON(argv[2], &ver, extPacketList);
+    // Intermediary arguments
+    else if(argc > 2) {
+        for (; argIndex < argc - 1; ++argIndex) {
+            if(argv[argIndex][0] == '-') {
+                int charIndex = 1;
+                if((charIndex < strlen(argv[argIndex])) && (argv[argIndex][charIndex] == '-')) {
+                    if(strcmp(argv[argIndex], "--verbose") == 0) ver = 1;
+                    else if(strcmp(argv[argIndex], "--log") == 0) logToFile = 1;
+                    else if(strcmp(argv[argIndex], "--help") == 0) help = 1;
+                    else err = true;
+                }
+                else for(; charIndex < strlen(argv[argIndex]); ++charIndex) {
+                    if(argv[argIndex][charIndex] == 'v') ver = 1;
+                    else if(argv[argIndex][charIndex] == 'l') logToFile = 1;
+                    else if(argv[argIndex][charIndex] == 'h') help = 1;
+                    else err = true;
+                }
+            }
+        }
     }
-    else {
-        fprintf(stderr, "Usage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n");
+    // Not enough arguments
+    else err = true;
+        
+    // Error
+    if(err) {
+        fprintf(stderr, "\nERROR: Undefined argument\nUsage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n  -l, --log            Log output data structure to outputFiles/log.txt\n  -h, --help           Show help\n\n");
         exit(EXIT_FAILURE);
     }
-
+    // Help
+    if(help == 1) {
+        printf("\nUsage: /path/json_to_sv [options] /path/file.json\nOptions:\n  -v, --verbose        Show output data structure in the command line\n  -l, --log            Log output data structure to outputFiles/log.txt\n  -h, --help           Show help\n\n");
+        return(EXIT_SUCCESS);
+    }
+    // Arguments accepted, continuing...
+    packet extPacketList[NUM_MAX_PACKETS];
+    parseJSON(argv[argIndex], extPacketList, &ver, &logToFile);
+    
     return(EXIT_SUCCESS);
 }
