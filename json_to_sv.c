@@ -3,8 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "./JSMN/jsmn.h"
-//#include "svdpi.h"
+#include "./include/JSMN/jsmn.h"
+#include "./include/svdpi.h"
 //#include "vc_hdrs.h"
 
 #define BUFFER_SIZE 5000
