@@ -14,7 +14,7 @@ typedef struct packed {
 } packet;
 
 // DPI
-import "DPI-C" function packet parseJSON(input string jsonFilePath, input int ver);
+import "DPI-C" function void parseJSON(input string jsonFilePath, inout packet extPacketList[], inout int ver, inout int logToFile);
 
 // Top
 module testbench();
@@ -48,19 +48,23 @@ module testbench();
         #5 resetn = 1;
     end
 
+    // DPI
     initial begin
-        string jsonFilePath = "../jsonTests/jsonPacketTest_extensive.json";
-        int ver = 1'd0;
-        packet [63:0] packetList = parseJSON(jsonFilePath, ver);
+        input string jsonFilePath = "../jsonTests/jsonPacketTest_extensive.json";
+        inout packet [63:0] extPacketList;
+        inout int ver = 1'd0;
+        inout int logToFile = 1'd0;
+        parseJSON(jsonFilePath, extPacketList, ver, logToFile);
     end
 
+    // Generate transaction for each flit
     initial begin
         #50
-
-        gen_transaction(64'd0, 64'hc4c0c02ca553e16fa, 8'hff, 1'b0);
-        gen_transaction(64'd1, 64'h0000007447c0887a, 8'hff, 1'b0);
-        gen_transaction(64'd2, 64'h0100000100030000, 8'hff, 1'b0);
-        gen_transaction(64'd3, 64'h5073930200000000, 8'h0f, 1'b1);
+        for(int i = 0; i < extPacketList.size(); ++i) {
+            for(int j = 0; j < extPacketList[i].size(); ++j) {
+                gen_transaction(i, extPacketList[i][j].data, extPacketList[i][j].keep, extPacketList[i][j].last);
+            }
+        }
     end
     
 wire [63:0] data_out;
