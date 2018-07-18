@@ -60,8 +60,8 @@ module testbench();
     // Generate transaction for each flit
     initial begin
         #50
-        for(int i = 0; i < extPacketList.size(); ++i) {
-            for(int j = 0; j < extPacketList[i].size(); ++j) {
+        for(int i = 0; i < $size(extPacketList); ++i) {
+            for(int j = 0; j < $size(extPacketList[i]); ++j) {
                 gen_transaction(i, extPacketList[i][j].data, extPacketList[i][j].keep, extPacketList[i][j].last);
             }
         }
@@ -210,7 +210,7 @@ design_1 design_1_i
         .S_AXI_MEM_1_wvalid(S_AXI_MEM_1_wvalid)
     );
 
-// Get transaction task
+// Gen transaction task
 task gen_transaction(input [63:0] num, input [63:0] data_task, input [7:0] keep_task, input last_task);
 
   data = data_task;
