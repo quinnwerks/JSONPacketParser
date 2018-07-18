@@ -18,7 +18,7 @@
 #define MAX_NUMBER_FLITS 23
 
 
-/*
+/**
  *  STRUCTS
  */
 
@@ -37,7 +37,7 @@ typedef struct Packet {
 } packet;
 
 
-/*
+/**
  *  HELPER FUNCTIONS
  */
 
@@ -49,7 +49,7 @@ void printHelp() {
 }
 
 // Read in JSON file
-void readFile(char * path, char * outputstr) {
+void readFile(const char * path, char * outputstr) {
     FILE * input_f;
     char c;
     int index;
@@ -138,10 +138,8 @@ bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) 
     return false;
 }
 
-//     parseJSON(argv[argIndex], extPacketList, &ver, &logToFile);
-
 // Parse JSON file into its corresponding data structures
-void parseJSON(char * jsonFilePath, packet extPacketList[], int * ver, int * logToFile) {
+void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int * logToFile) {
     
     packet packetList[NUM_MAX_PACKETS];
     char jsonstr[BUFFER_SIZE];
@@ -228,7 +226,7 @@ void parseJSON(char * jsonFilePath, packet extPacketList[], int * ver, int * log
 }
 
 
-/*
+/**
  *  MAIN
  */
 
