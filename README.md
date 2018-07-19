@@ -18,6 +18,10 @@ Uses the JSMN library to parse a JSON file into a C data structure. This data st
 
 ## SystemVerilog Interfacing
 
+*The sv code included in the svTestbenches folder is strictly an example*
+
+Please refer to Galapagos (link below) to see a working implementation of the packet parser.
+
 Uses DPI to interface the C parser with a SystemVerilog testbench. The testbench creates transactions to be sent to the simulated hardware via re-creating the struct it recieves from the parser.
 
 ## Relevant Projects
