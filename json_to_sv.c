@@ -1,40 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
 
-#include "./include/JSMN/jsmn.h"
-#include "./include/svdpi.h"
-//#include "vc_hdrs.h"
-
-#define BUFFER_SIZE 5000
-#define MAX_TOKEN_COUNT 128
-#define NUM_MAX_PACKETS 64
-#define NUM_FIELDS 3
-#define STRING_TOK 3
-#define OBJECT_TOK 1
-#define PRIMATIVE_TOK 0
-#define NUMBER_OF_FLIT_FIELDS 3
-#define MAX_NUMBER_FLITS 23
+#include "./include/json_to_c.h"
 
 
-/**
- *  STRUCTS
- */
-
-
-// Struct for flit data
-typedef struct Flit {
-    int data;
-    int keep;
-    int last;
-} flit;
-
-// Struct for packet data (max 23 flits)
-typedef struct Packet {
-    struct Flit flit_list[23];
-    int num_flits;
-} packet;
 
 
 /**
@@ -48,7 +15,7 @@ void printHelp() {
     return;
 }
 
-// Read in JSON file
+// Print help (usage & options)
 void readFile(const char * path, char * outputstr) {
     FILE * input_f;
     char c;
@@ -101,7 +68,7 @@ void buildTokStr(jsmntok_t * tok, char * jsonstr, int index, char * str, int tok
     return;
 }
 
-// Build integer value from token at given index
+// Build int from token at given index
 int buildTokInt(jsmntok_t * tok, char * jsonstr, int index, char * str, int tokLen) {
     buildTokStr(tok, jsonstr, index, str, tokLen);
     return strtol(str, NULL, 0);
