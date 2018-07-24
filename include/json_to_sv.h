@@ -1,5 +1,5 @@
-#ifndef JSON_TO_C
-#define JSON_TO_C
+#ifndef JSON_TO_SV
+#define JSON_TO_SV
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
