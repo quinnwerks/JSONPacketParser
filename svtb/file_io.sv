@@ -18,9 +18,6 @@ module openFile();
     int file;
     int status;
     int data, keep, last;
-
-
-
     initial begin
         openFile(file);
 
@@ -29,10 +26,7 @@ module openFile();
             $display(data);
             $display(keep);
             $display(last);
-        end
-        
-        
-        
+        end       
         closeFile(file);
     end
 

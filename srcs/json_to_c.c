@@ -28,22 +28,34 @@ void readFile(const char * path, char * outputstr) {
 }
 
 // Outputs full data structure to text file
-void makeFile(char * path, packet * packetList, int listSize){
+void makeFile(char * path, packet * packetList, int listSize, bool svLog) {
     FILE * output_f;
 
     output_f = fopen(path, "w");
-
-    for(int i = 0; i < listSize; i++){
-        packet tempPacket = packetList[i];
-
-        for(int j = 0; j < tempPacket.num_flits; j++){         
-            flit tempFlit = packetList[i].flit_list[j];
-            fprintf(output_f,"%d\n%d\n%d\n", tempFlit.data, tempFlit.keep, tempFlit.last);
+    if(svLog) {
+        for(int i = 0; i < listSize; i++) {
+            fprintf(output_f, "\n");
+            for(int j = 0; j < packetList[i].num_flits; j++) {
+                flit tempFlit = packetList[i].flit_list[j];
+                fprintf(output_f,"%d,%d,%d\n", tempFlit.data, tempFlit.keep, tempFlit.last);
+            }
         }
+        printf("INFO: SystemVerilog compatible data structure temporarily logged to outputFiles/svLog.txt\n\n");
+    }
+    else {
+        for(int i = 0; i < listSize; i++) {
+            fprintf(output_f, "Packet[%d]\n|\n", i);
+            for(int j = 0; j < packetList[i].num_flits; j++) {
+                flit tempFlit = packetList[i].flit_list[j];
+                fprintf(output_f,"|----Flit[%d]\n     |----Data: %d\n     |----Keep: %d\n     |----Last: %d\n",
+                    j, packetList[i].flit_list[j].data, packetList[i].flit_list[j].keep, packetList[i].flit_list[j].last);
+            }
+        }
+        printf("INFO: Output data structure logged to outputFiles/log.txt\n\n");
     }
 
     fclose(output_f);
-    printf("INFO: Output data structure logged to ./outputFiles/log.txt\n\n");
+    return;
 }
 
 // Increment index until token type is 3 (string)
@@ -195,6 +207,9 @@ void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int
 
     memcpy(extPacketList, packetList, sizeof(packetList));
 
+    // SystemVerilog logFile
+    makeFile("./outputFiles/svLog.txt", packetList, packetIndex, true);
+
     // Verbose
     if(*ver == 1) {
         printf("### Output Data Structure:\n\n");
@@ -210,7 +225,7 @@ void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int
     
     // Write all flit data to output file file
     if(*logToFile == 1) {
-        makeFile("./outputFiles/log.txt", packetList, packetIndex);
+        makeFile("./outputFiles/log.txt", packetList, packetIndex, false);
     }
 
     return;
