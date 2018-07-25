@@ -38,7 +38,7 @@ void printHelp();
 void readFile(const char * path, char * outputstr);
 
 // Outputs full data structure to text file
-void makeFile(char * path, packet * packetList, int listSize);
+void makeFile(char * path, packet * packetList, int listSize, bool svLog);
 
 // Increment index until token type is 3 (string)
 // or index is > tokSize
