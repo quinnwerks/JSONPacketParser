@@ -1,7 +1,7 @@
-
-task automatic readFromFile(ref int data, ref int keep, ref int last, ref int status, ref int file);
-    status = $fscanf(file,"%d,%d,%d\n",last,data,keep); 
-endtask
+//TODO
+//task automatic readFromFile(ref reg[32:0] data, ref reg [7:0] keep, ref reg [7:0] int last, ref int status, ref int file);
+//    status = $fscanf(file,"%d,%d,%d\n",last,data,keep); 
+//endtask
 
 task automatic openFile(ref int file);
     $display("Opening File");
@@ -14,7 +14,11 @@ task automatic closeFile(ref int file);
 endtask
 
 
-module openFile();
+module fileIO(
+            output reg [63:0] out_data, 
+            output reg [7:0] out_keep, 
+            output reg out_last
+            );
     int file;
     int status;
     int data, keep, last;
@@ -26,6 +30,7 @@ module openFile();
             $display(data);
             $display(keep);
             $display(last);
+            //#10;
         end       
         closeFile(file);
     end
