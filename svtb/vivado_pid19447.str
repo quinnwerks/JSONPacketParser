@@ -1,0 +1,107 @@
+/*
+
+Xilinx xsim v2018.1 (64-bit) [Major: 2018, Minor: 1]
+SW Build: 2188600 on Wed Apr  4 18:39:19 MDT 2018
+IP Build: 2185939 on Wed Apr  4 20:55:05 MDT 2018
+
+Process ID: 19447
+License: Customer
+
+Current time: 	Wed Jul 25 17:13:25 UTC 2018
+Time zone: 	Coordinated Universal Time (Etc/UTC)
+
+OS: Ubuntu
+OS Version: 4.4.0-62-generic
+OS Architecture: amd64
+Available processors (cores): 24
+
+Display: :2.0
+Screen size: 1920x1080
+Screen resolution (DPI): 179
+Available screens: 1
+Available disk space: 1,389 GB
+Default font: family=Dialog,name=Dialog,style=plain,size=12
+
+Java version: 	1.8.0_112 64-bit
+Java home: 	/opt/Xilinx/Vivado/2018.1/tps/lnx64/jre
+Java executable location: 	/opt/Xilinx/Vivado/2018.1/tps/lnx64/jre/bin/java
+Java initial memory (-Xms): 	128 MB
+Java maximum memory (-Xmx):	 2 GB
+
+
+User name: 	quinn0
+User home directory: /home/quinn0
+User working directory: /home/quinn0/JSONPacketParser/svtb
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /opt/Xilinx/Vivado
+HDI_APPROOT: /opt/Xilinx/Vivado/2018.1
+RDI_DATADIR: /opt/Xilinx/Vivado/2018.1/data
+RDI_BINDIR: /opt/Xilinx/Vivado/2018.1/bin
+
+Vivado preferences file location: /home/quinn0/.Xilinx/xsim/2018.1/vivado.xml
+Vivado preferences directory: /home/quinn0/.Xilinx/xsim/2018.1/
+Vivado layouts directory: /home/quinn0/.Xilinx/xsim/2018.1/layouts
+PlanAhead jar file location: 	/opt/Xilinx/Vivado/2018.1/lib/classes/planAhead.jar
+Vivado log file location: 	/home/quinn0/JSONPacketParser/svtb/xsim.log
+Vivado journal file location: 	/home/quinn0/JSONPacketParser/svtb/xsim.jou
+Engine tmp dir: 	./.Xil/xsim-19447-integrators
+
+GUI allocated memory:	132 MB
+GUI max memory:		3,052 MB
+Engine allocated memory: 8,245 MB
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// TclEventType: START_PROGRESS_DIALOG
+// bv (ch):  Sourcing Tcl script 'xsim.dir/work.openFile/xsim_script.tcl' : addNotify
+// Tcl Message: source xsim.dir/work.openFile/xsim_script.tcl 
+// Tcl Message: # set_param project.enableReportConfiguration 0 # load_feature core 
+// [GUI Memory]: 60 MB (+60642kb) [00:00:07]
+// [Engine Memory]: 8,245 MB (+8494123kb) [00:00:07]
+// TclEventType: LOAD_FEATURE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// Tcl Message: # current_fileset 
+// HMemoryUtils.trashcanNow. Engine heap size: 8,378 MB. GUI used memory: 33 MB. Current time: 7/25/18 5:13:27 PM UTC
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_ADD
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_NEW
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified 
+// Tcl Message: INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/Vivado/2018.1/data/ip'. 
+// TclEventType: PROJECT_NEW
+// Tcl Message: current_fileset: Time (s): cpu = 00:00:12 ; elapsed = 00:00:05 . Memory (MB): peak = 9653.805 ; gain = 349.973 ; free physical = 55988 ; free virtual = 120040 
+// Tcl Message: # xsim {work.openFile} -autoloadwcfg 
+// Tcl Message: Vivado Simulator 2018.1 
+// TclEventType: SIMULATION_CREATE_SIMULATION_OBJECT
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// [Engine Memory]: 8,702 MB (+46934kb) [00:00:16]
+// TclEventType: STOP_PROGRESS_DIALOG
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// Tcl Message: Time resolution is 1 ps 
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+dismissDialog("Sourcing Tcl script 'xsim.dir/work.openFile/xsim_script.tcl'"); // bv (ch)
+// TclEventType: STOP_PROGRESS_DIALOG
+selectButton(PAResourceCommand.PACommandNames_SIMULATION_LIVE_RUN_ALL, "simulation_live_run_all"); // B (f, ch)
+// Run Command: PAResourceCommand.PACommandNames_SIMULATION_LIVE_RUN_ALL
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_CLEAR_CURRENT_LINE
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: SIMULATION_OBJECT_TREE_RESTORED
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: SIMULATION_CURRENT_SCOPE_CHANGED
+// TclEventType: SIMULATION_CURRENT_STACK_CHANGED
+// TclEventType: SIMULATION_UPDATE_STACK_FRAMES
+// TclEventType: SIMULATION_CURRENT_STACK_FRAME_CHANGED
+// TclEventType: SIMULATION_UPDATE_LOCALS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// Tcl Message: run all 
+// Tcl Message: Opening File           2 Closing File 

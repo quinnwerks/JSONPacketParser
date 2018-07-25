@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Webtalk v2018.1 (64-bit)
+# SW Build 2188600 on Wed Apr  4 18:39:19 MDT 2018
+# IP Build 2185939 on Wed Apr  4 20:55:05 MDT 2018
+# Start of session at: Wed Jul 25 17:09:15 2018
+# Process ID: 18980
+# Current directory: /home/quinn0/JSONPacketParser/svtb
+# Command line: wbtcv -mode batch -source /home/quinn0/JSONPacketParser/svtb/xsim.dir/work.openFile/webtalk/xsim_webtalk.tcl -notrace
+# Log file: /home/quinn0/JSONPacketParser/svtb/webtalk.log
+# Journal file: /home/quinn0/JSONPacketParser/svtb/webtalk.jou
+#-----------------------------------------------------------
+source /home/quinn0/JSONPacketParser/svtb/xsim.dir/work.openFile/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-186] '/home/quinn0/JSONPacketParser/svtb/xsim.dir/work.openFile/webtalk/usage_statistics_ext_xsim.xml' has been successfully sent to Xilinx on Wed Jul 25 17:09:17 2018. For additional details about this file, please refer to the WebTalk help file at /opt/Xilinx/Vivado/2018.1/doc/webtalk_introduction.html.
+INFO: [Common 17-206] Exiting Webtalk at Wed Jul 25 17:09:17 2018...
