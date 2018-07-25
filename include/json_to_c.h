@@ -5,8 +5,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "./JSMN/jsmn.h"
-#include "./svdpi.h"
+#include "jsmn.h"
+#include "svdpi.h"
 
 #define BUFFER_SIZE 5000
 #define MAX_TOKEN_COUNT 128

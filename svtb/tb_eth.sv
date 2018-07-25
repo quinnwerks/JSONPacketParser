@@ -5,7 +5,7 @@
 typedef struct {
     int data[63:0][22:0];
     int keep[63:0][22:0];
-    logic last[63:0][22:0];
+    int last[63:0][22:0];
     int num_flits[63:0];
 } json_data;
 
@@ -17,7 +17,7 @@ module conv_json();
         input string jsonFilePath,
         inout int svData[][],
         inout int svKeep[][],
-        inout logic svLast[][],
+        inout int svLast[][],
         inout int svNumFlits[]
         );
 

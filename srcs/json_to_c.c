@@ -1,7 +1,4 @@
-
-#include "./include/json_to_c.h"
-
-
+#include "../include/json_to_c.h"
 
 
 /**
@@ -15,7 +12,7 @@ void printHelp() {
     return;
 }
 
-// Print help (usage & options)
+// Read in JSON file
 void readFile(const char * path, char * outputstr) {
     FILE * input_f;
     char c;
@@ -68,7 +65,7 @@ void buildTokStr(jsmntok_t * tok, char * jsonstr, int index, char * str, int tok
     return;
 }
 
-// Build int from token at given index
+// Build integer value from token at given index
 int buildTokInt(jsmntok_t * tok, char * jsonstr, int index, char * str, int tokLen) {
     buildTokStr(tok, jsonstr, index, str, tokLen);
     return strtol(str, NULL, 0);
@@ -104,6 +101,33 @@ bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) 
     // Finished file, stop
     return false;
 }
+
+
+// Pass in array from SystemVerilog via DPI
+//void svArrayPasser(const char * jsonFilePath, svOpenArrayHandle svData, svOpenArrayHandle svKeep, svOpenArrayHandle svLast, svOpenArrayHandle svNumFlit) {
+//    /*
+//    * STEPS
+//    * 1. create a packet list
+//    * 2. call parse JSON to build the packet list
+//    * 3. iterate through for loop to set equivalent openArrayHandles
+//    * 4. call it a day and crack open a cold one
+//    * 5. add stuff to compilation header...
+//    */
+//   packet ext_packet_list[NUM_MAX_PACKETS];
+//   parseJSON(jsonFilePath, ext_packet_list, 0, 0);
+//   for(unsigned i = 0; i < NUM_MAX_PACKETS; i++){
+//        for(unsigned j = 0; j < ext_packet_list[i].num_flits; j++){
+//           svPutBitArrElem2VecVal(svData, &ext_packet_list[i].flit_list[j].data, i,j);
+//           svPutBitArrElem2VecVal(svKeep, &ext_packet_list[i].flit_list[j].keep, i,j);
+//           svPutBitArrElem2VecVal(svLast, &ext_packet_list[i].flit_list[j].last, i,j);
+//        }
+//        svPutBitArrElem1VecVal(svNumFlit, &ext_packet_list[i].num_flits, i);
+//
+//   }
+//
+//    return;
+//}
+
 
 // Parse JSON file into its corresponding data structures
 void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int * logToFile) {
