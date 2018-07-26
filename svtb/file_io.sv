@@ -25,6 +25,7 @@ module fileIO
 
     int file;
     int status;
+    int NUM_ENTRIES = 3;
 
     initial begin
         openFile(file);
@@ -33,10 +34,10 @@ module fileIO
     initial begin
         while(!$feof(file)) begin
             #10
-            $fscanf(file, "%d,%d,%d", out_data, out_keep, out_last);
-//            $display(out_data);
-//            $display(out_keep);
-//            $display(out_last);
+            status = $fscanf(file, "%d,%d,%d", out_data, out_keep, out_last);
+            
+            if(status != NUM_ENTRIES) 
+                $display("ERROR: Data in file does not match input format. Please check the file.");
         end
         closeFile(file);
     end
