@@ -14,6 +14,8 @@ Uses the JSMN library to parse a JSON file into a C data structure. This data st
 
 `-l`, `--log` :           Log output data structure to outputFiles/log.txt
 
+`-s`, `--sv` :            Log output data structure (for SystemVerilog interfacing) to outputFiles/svLog.txt
+
 `-h`, `--help` :          Show help
 
 ## SystemVerilog Interfacing
