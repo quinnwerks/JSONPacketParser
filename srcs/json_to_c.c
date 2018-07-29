@@ -8,7 +8,14 @@
 
 // Print help (usage & options)
 void printHelp() {
-	printf("Usage: [path to json_to_sv executable] [options] [path to JSON file]\nOptions:\n  -v, --verbose        Show output data structure in the command line\n  -l, --log            Log output data structure to outputFiles/log.txt\n  -h, --help           Show help\n\n");
+	printf(
+"Usage: [path to json_to_sv executable] [options] [path to JSON file]\n\
+Options:\n\
+  -v, --verbose        Show output data structure in the command line\n\
+  -l, --log            Log output data structure to outputFiles/log.txt\n\
+  -s, --sv             Log output data structure (for SystemVerilog interfacing) to outputFiles/svLog.txt\n\
+  -h, --help           Show help\n\n"
+          );
     return;
 }
 
