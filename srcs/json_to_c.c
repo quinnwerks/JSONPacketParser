@@ -8,7 +8,14 @@
 
 // Print help (usage & options)
 void printHelp() {
-	printf("Usage: [path to json_to_sv executable] [options] [path to JSON file]\nOptions:\n  -v, --verbose        Show output data structure in the command line\n  -l, --log            Log output data structure to outputFiles/log.txt\n  -h, --help           Show help\n\n");
+	printf(
+"Usage: [path to json_to_sv executable] [options] [path to JSON file]\n\
+Options:\n\
+  -v, --verbose        Show output data structure in the command line\n\
+  -l, --log            Log output data structure to outputFiles/log.txt\n\
+  -s, --sv             Log output data structure (for SystemVerilog interfacing) to outputFiles/svLog.txt\n\
+  -h, --help           Show help\n\n"
+          );
     return;
 }
 
@@ -142,7 +149,7 @@ bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr) 
 
 
 // Parse JSON file into its corresponding data structures
-void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int * logToFile) {
+void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int * logToFile, int * svLog) {
     
     packet packetList[NUM_MAX_PACKETS];
     char jsonstr[BUFFER_SIZE];
@@ -195,7 +202,6 @@ void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int
             tempPacket.num_flits = flitIndex;
         }
 
-        // Make cleaner fix
         if(!firstPacket) {
             packetList[packetIndex] = tempPacket;
             packetIndex++;
@@ -207,10 +213,7 @@ void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int
 
     memcpy(extPacketList, packetList, sizeof(packetList));
 
-    // SystemVerilog logFile
-    makeFile("./outputFiles/svLog.txt", packetList, packetIndex, true);
-
-    // Verbose
+    // Checking flags
     if(*ver == 1) {
         printf("### Output Data Structure:\n\n");
         for(int i = 0; i < packetIndex; i++) {
@@ -222,11 +225,8 @@ void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int
         }
         printf("\n");
     }
-    
-    // Write all flit data to output file file
-    if(*logToFile == 1) {
-        makeFile("./outputFiles/log.txt", packetList, packetIndex, false);
-    }
+    if(*logToFile == 1) makeFile("./outputFiles/log.txt", packetList, packetIndex, false);
+    if(*svLog == 1) makeFile("./outputFiles/svLog.txt", packetList, packetIndex, true);
 
     return;
 }
@@ -240,6 +240,7 @@ void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int
 int main(int argc, char * argv[]) {
     int ver = 0;
     int logToFile = 0;
+    int svLog = 0;
     int help = 0;
     int argIndex = 1;
     bool err = false;
@@ -252,12 +253,14 @@ int main(int argc, char * argv[]) {
                 if((charIndex < strlen(argv[argIndex])) && (argv[argIndex][charIndex] == '-')) {
                     if(strcmp(argv[argIndex], "--verbose") == 0) ver = 1;
                     else if(strcmp(argv[argIndex], "--log") == 0) logToFile = 1;
+                    else if(strcmp(argv[argIndex], "--sv") == 0) svLog = 1;
                     else if(strcmp(argv[argIndex], "--help") == 0) help = 1;
                     else err = true;
                 }
                 else for(; charIndex < strlen(argv[argIndex]); ++charIndex) {
                     if(argv[argIndex][charIndex] == 'v') ver = 1;
                     else if(argv[argIndex][charIndex] == 'l') logToFile = 1;
+                    else if(argv[argIndex][charIndex] == 's') svLog = 1;
                     else if(argv[argIndex][charIndex] == 'h') help = 1;
                     else err = true;
                 }
@@ -268,27 +271,27 @@ int main(int argc, char * argv[]) {
     else err = true;
     
     // Error checking
-    if((argv[argc - 1][0] == '-') && ((ver == 1) || (logToFile == 1) || (help == 0))) {
+    if((argv[argc - 1][0] == '-') && ((ver == 1) || (logToFile == 1) || (svLog == 1) || (help == 0))) {
 	fprintf(stderr, "\nERROR: Incorrect number of arguments\n");
 	printHelp();
 	exit(EXIT_FAILURE);
     }
     if(err) {
         fprintf(stderr, "\nERROR: Undefined argument\n");
-	printHelp();
+	    printHelp();
         exit(EXIT_FAILURE);
     }
 
     // Help
     if(help == 1) {
-	printf("\n");
+	    printf("\n");
         printHelp();
         return(EXIT_SUCCESS);
     }
 
     // Arguments accepted, continuing...
     packet extPacketList[NUM_MAX_PACKETS];
-    parseJSON(argv[argc - 1], extPacketList, &ver, &logToFile);
+    parseJSON(argv[argc - 1], extPacketList, &ver, &logToFile, &svLog);
     
     return(EXIT_SUCCESS);
 }

@@ -60,7 +60,7 @@ int getFieldType(char * str);
 bool incUntilFlits(int * p_index, jsmntok_t * tok, int tokSize, char * jsonstr);
 
 // Parse JSON file into its corresponding data structures
-void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int * logToFile);
+void parseJSON(const char * jsonFilePath, packet extPacketList[], int * ver, int * logToFile, int * svLog);
 
 
 #endif
