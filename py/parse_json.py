@@ -5,6 +5,8 @@ import re
 import collections
 import bson
 
+
+# code jointly written with Varun (last name pending)
 # taken from https://gist.github.com/ChunMinChang/88bfa5842396c1fbbc5b
 def commentRemover(text):
     def replacer(match):
