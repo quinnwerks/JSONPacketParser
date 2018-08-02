@@ -12,22 +12,22 @@ endtask
 
 module binaryUtil();
 
-    string relPath = "../sample_out.bin";
+    string relPath = "./sample_out.bin";
     int fileID;
-    int status;
-    reg [] mem [];
+    int currByte;
+    reg [31:0] store;
 
     initial begin
-        openFile(fileID, fileRelPath);
+        openFile(fileID, relPath);
     end
     
     initial begin
-        while(!$feof(fileID)) begin
-            #50
+        //while(!$feof(fileID)) begin
+        //    #50
 
-//            status = $fread(fileID, mem);
-//            $display(currByte);
-        end
+            currByte = $fread(fileID, store);
+            $display(currByte);
+        //end
         closeFile(fileID);
     end
 

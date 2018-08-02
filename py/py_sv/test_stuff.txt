@@ -1,0 +1,3 @@
+exec xvlog -sv ./tb_eth.sv
+exec xelab conv_json -debug typical
+exec xsim work.conv_json -gui
