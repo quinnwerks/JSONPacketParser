@@ -14,20 +14,21 @@ module binaryUtil();
 
     string relPath = "sample_out.bin";
     int fileID;
-    int currByte;
-    reg [31:0] store;
+    int readStatus;
+    // TODO: Make dynamic
+    reg [7:0] mem['hac2];
 
     initial begin
         openFile(fileID, relPath);
     end
     
     initial begin
-        //while(!$feof(fileID)) begin
-        //    #50
-
-            currByte = $fread( store, fileID);
-            $display(currByte);
-        //end
+        #50
+        readStatus = $fread(mem, fileID);
+        #50
+        if(readStatus == 'hac2) begin
+            $display("EOF REACHED");
+        end
         closeFile(fileID);
     end
 
