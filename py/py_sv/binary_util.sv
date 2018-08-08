@@ -10,6 +10,13 @@ task automatic closeFile(ref int fileID);
     $fclose(fileID);
 endtask
 
+function automatic getNextByte(ref int fileID, int numBytes)
+    reg [numBytes*8-1:0] store;
+    int nextByte;
+    nextByte = $fread(store, fileID);
+    return nextByte;
+endfunction
+
 module binaryUtil();
 
     string relPath = "sample_out.bin";

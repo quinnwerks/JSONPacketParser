@@ -127,14 +127,14 @@ def main(mode, filepath):
     for packet in rawData['packets']:
         if 'header' in packet:
             print("in a header")
-            h_word = packet['header']
+            packet['header']  = packet['header']
             valid = 1
             size_list = {}
-            if 'type' in h_word:
+            if 'type' in packet['header'] :
                 print("found a type")
-                if h_word['type'] == 'ethernet':
+                if packet['header'] ['type'] == 'ethernet':
                     print("do stuff with ethernet header")
-                elif h_word['type'] == 'mpi':
+                elif packet['header'] ['type'] == 'mpi':
                     print("do stuff with mpi header")
                 else:
                     valid = 0
@@ -143,15 +143,16 @@ def main(mode, filepath):
                 print("ignoring header: no type")
 
             if valid:
-                if 'info' in h_word:
+                if 'info' in packet['header']:
                     print('header is valid start processing info')
-                    for h_info in h_word['info']:
+                    for h_info in packet['header']['info']:
                         print(h_info)  
-                        numStr = h_word['info'][h_info]
+                        numStr = packet['header']['info'][h_info]
                         if numStr[:2] == "0x":
-                            h_word['info'][h_info] = int(numStr, 16)
+                           packet['header']['info'][h_info] = int(numStr, 16)
                         else:
-                            h_word['info'][h_info] = int(numStr)
+                            packet['header']['info'][h_info] = int(numStr)
+                        #packet['header'] = packet['header'] 
 
             else:
                 print("ignoring header, no information provided")

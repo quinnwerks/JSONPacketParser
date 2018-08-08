@@ -126,7 +126,13 @@
           "data": 321, 
           "keep": 15
         }
-      ]
+      ], 
+      "header": {
+        "info": {
+          "a": 291
+        }, 
+        "type": "ethernet"
+      }
     }, 
     {
       "interface": "axis_net", 

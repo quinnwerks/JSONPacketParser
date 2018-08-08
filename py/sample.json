@@ -14,6 +14,7 @@ This is a sample comment
     "type": "flit",
     "interface": "axis_net",
     "width": 32,
+    "header":{"type":"ethernet", "info":{"a":"0x123"}},
     "payload": [
       {"data": "0x0114CCAA","keep": 15,"last": 0,"custom": 1},
       {"data": "0x00FF0006","keep": "ALL","last": 0,"custom": 1},
