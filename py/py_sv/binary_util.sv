@@ -1,44 +1,44 @@
 `timescale 1 ns/ 1ps
 
-task automatic openFile(ref int fileID, ref string fileRelPath);
-    $display("Opening File");
-    fileID = $fopen(fileRelPath, "rb");
+`define OFFSET 8
+
+task automatic open_file(ref int fID, ref string fRelPath);
+    $display("Opening file...");
+    fID = $fopen(fRelPath, "rb");
 endtask
 
-task automatic closeFile(ref int fileID);
-    $display("Closing File");
-    $fclose(fileID);
+task automatic close_file(ref int fID);
+    $display("Closing file...");
+    $fclose(fID);
 endtask
 
-function automatic getNextByte(ref int fileID, int numBytes)
-    reg [numBytes*8-1:0] store;
-    int nextByte;
-    nextByte = $fread(store, fileID);
-    return nextByte;
-endfunction
+module bin_parse();
 
-module binaryUtil();
-
-    string relPath = "sample_out.bin";
-    int fileID;
-    int readStatus;
-    // TODO: Make dynamic
-    reg [7:0] mem['hac2];
-
-    initial begin
-        openFile(fileID, relPath);
-    end
+    string fRelPath = "sample_out.bin";
+    int fID, fSize, rStatus, currPos;
+    reg [7:0] fSizeRev[4];
+    reg [7:0] fData[8];
     
+    task bin_init();
+        #10
+        rStatus = $fread(fSizeRev, fID);
+        currPos = $ftell(fID);
+        fSize = {<<8{fSizeRev}};
+    endtask
+
     initial begin
-        #50
-        readStatus = $fread(mem, fileID);
-        #50
-        if(readStatus == 'hac2) begin
-            $display("EOF REACHED");
+        open_file(fID, fRelPath);
+        bin_init();
+        $display("File size = %d bits", fSize);
+
+        while(currPos < fSize) begin
+            #10
+            rStatus = $fread(fData, fID);
+            currPos = $ftell(fID);
         end
-        closeFile(fileID);
-    end
 
-    
+        $display("EOF REACHED");
+        close_file(fID);
+    end
 
 endmodule
