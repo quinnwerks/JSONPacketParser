@@ -100,7 +100,7 @@ def main(mode, filepath):
     startList = []
     
 
-    dataOffset = 4 # with wait it will be 6
+    dataOffset = 6 # with wait it will be 6
 
     numBytesWord = 8
     numBytesPerBit = 8
@@ -120,7 +120,7 @@ def main(mode, filepath):
         for j in range(len(dataList[i])):
             totalData = totalData + 1
             dataListBin.append(dataList[i][j])
-        dataEnd = (totalData + dataOffset) * bitsPerField
+        dataEnd = (totalData + dataOffset + 1 ) * bitsPerField
         #print(dataEnd)
         endList.append(dataEnd)
         startList.append(dataStart)
@@ -158,10 +158,13 @@ def main(mode, filepath):
 
     #now add meta data
 
-    totalSize = dataOffset * bitsPerField + totalHeader + endList[-1] - startList[0]
+    totalSize = (dataOffset ) * bitsPerField + totalHeader + endList[-1] - startList[0]
 
     headerStart = endList[-1]
     headerEnd = headerStart  + totalHeader
+
+    waitStart = headerEnd
+    waitEnd = headerEnd
 
     binList = []
     binList.append(totalSize)
@@ -169,6 +172,8 @@ def main(mode, filepath):
     binList.append(headerEnd)
     binList.append(startList[0])
     binList.append(endList[-1])
+    binList.append(waitStart)
+    binList.append(waitEnd)
     binList = binList + dataListBin
     binList = binList + headerBin
 
