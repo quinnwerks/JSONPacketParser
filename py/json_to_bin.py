@@ -53,7 +53,7 @@ def main(mode, filepath):
             if(outerObj == 'header'):
                 h_word = stuff['header']
                 if h_word['type'] == 'ethernet':
-                    headerType = 0
+                    headerType = 105
                 else:
                     headerType = -1
 
@@ -100,12 +100,12 @@ def main(mode, filepath):
     startList = []
     
 
-    dataOffset = 7
+    dataOffset = 4 # with wait it will be 6
 
     numBytesWord = 8
     numBytesPerBit = 8
 
-    bitsPerField = numBytesPerBit*numBytesWord # this will be where the size goes
+    bitsPerField = numBytesWord # this will be where the size goes
 
     dataListBin = []
     headerBin = []
