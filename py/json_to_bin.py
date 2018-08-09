@@ -178,7 +178,7 @@ def main(mode, filepath):
     binList = binList + headerBin
 
     print(totalSize)
-
+    print(headerEnd)
     #generate the binary using binList
     binFile = open(tempBinName, 'wb')
     for i in range(len(binList)):
