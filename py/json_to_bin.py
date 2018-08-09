@@ -176,6 +176,7 @@ def main(mode, filepath):
     binList.append(endList[-1])
     binList.append(waitStart)
     binList.append(waitEnd)
+    binList.append(numHeaders)
     binList = binList + dataListBin
     binList = binList + headerBin
 
