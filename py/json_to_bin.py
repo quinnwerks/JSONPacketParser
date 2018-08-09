@@ -102,7 +102,7 @@ def main(mode, filepath):
     startList = []
     
 
-    dataOffset = 6 # with wait it will be 6
+    dataOffset = 7 
 
     numBytesWord = 8
     numBytesPerBit = 8
