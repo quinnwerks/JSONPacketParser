@@ -45,12 +45,14 @@ def main(mode, filepath):
     headerList = []
     typeList = []
     dataList = []
+    numHeaders = 0
     for stuff in rawData['packets']:
         headerType = -2
         newData = []
         newHeader = []
         for outerObj in stuff:
             if(outerObj == 'header'):
+                numHeaders = numHeaders + 1
                 h_word = stuff['header']
                 if h_word['type'] == 'ethernet':
                     headerType = 105
@@ -179,6 +181,7 @@ def main(mode, filepath):
 
     print(totalSize)
     print(headerEnd)
+    print(numHeaders)
     #generate the binary using binList
     binFile = open(tempBinName, 'wb')
     for i in range(len(binList)):
