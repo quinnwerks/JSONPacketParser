@@ -115,7 +115,7 @@ def main(mode, filepath):
     for i in range(len(dataList)):
         #print(headerType)
        
-        dataStart = (totalData + dataOffset) * bitsPerField
+        dataStart = (totalData + dataOffset + 1) * bitsPerField
         #print(dataStart)
         for j in range(len(dataList[i])):
             totalData = totalData + 1
@@ -158,7 +158,7 @@ def main(mode, filepath):
 
     #now add meta data
 
-    totalSize = (dataOffset ) * bitsPerField + totalHeader + endList[-1] - startList[0]
+    totalSize = (dataOffset + 1 ) * bitsPerField + totalHeader + endList[-1] - startList[0]
 
     headerStart = endList[-1]
     headerEnd = headerStart  + totalHeader
