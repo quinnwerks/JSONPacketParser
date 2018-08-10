@@ -1,5 +1,7 @@
 `timescale 1 ns/ 1ps
 
+`include "../../svtb/mpi.sv"
+
 `define SEEK_SET 0
 `define SEEK_CUR 1
 `define SEEK_END 2
@@ -28,12 +30,64 @@ endtask
 
 module bin_parse();
 
+    reg clk, ready, valid;
+    always #5 clk = ~clk;
+
     string fRelPath = "sample_out.bin";
     int fID, rStatus, sStatus, currPos;
-    longint fSize, currData, flitData, flitKeep, flitLast;
+    longint fSize, currData, payData, payKeep, payLast;
     reg [7:0] fData[8];
     reg [63:0] ADDR[6];
 
+    /**
+     *  INSTANTIATIONS
+     */
+
+    // ETHERNET
+    ethernet_interface stream_eth(
+        .clk(clk),
+        .stream_out_data(payData),
+        .stream_out_keep(payKeep),
+        .stream_out_last(payLast),
+        .stream_out_valid(valid),
+        .stream_out_ready(ready),
+        .stream_in_data(),
+        .stream_in_keep(),
+        .stream_in_last(),
+        .stream_in_valid(),
+        .stream_in_ready()
+        );
+
+//    // MPI
+//    mpi_interface stream_mpi(
+//        .clk(),
+//        .stream_out_data(),
+//        .stream_out_keep(),
+//        .stream_out_last(),
+//        .stream_out_valid(),
+//        .stream_out_ready(),
+//        .stream_in_data(),
+//        .stream_in_keep(),
+//        .stream_in_last(),
+//        .stream_in_valid(),
+//        .stream_in_ready()
+//        );
+//    
+//    // AXI
+//    axi_stream stream_axi(
+//        .data(),
+//        .dest(),
+//        .keep(),
+//        .user(),
+//        .last(),
+//        .valid(),
+//        .ready()
+//        );
+
+    /**
+     *  PARSE
+     */
+    
     task bin_init();
         #10
         rStatus = $fread(fData, fID);
@@ -42,6 +96,7 @@ module bin_parse();
     endtask
 
     initial begin
+        ready = 1'b0;
         open_file(fID, fRelPath);
         bin_init();
 
@@ -62,13 +117,35 @@ module bin_parse();
         while(currPos < ADDR[`DATA_END_ADDR_INDEX]) begin
             #10
             rStatus = $fread(fData, fID);
-            flitData = {>>{fData}};
+            payData = {>>{fData}};
 
             rStatus = $fread(fData, fID);
-            flitKeep = {>>{fData}};
+            payKeep = {>>{fData}};
 
             rStatus = $fread(fData, fID);
-            flitLast = {>>{fData}};
+            payLast = {>>{fData}};
+
+
+            stream_eth.write(
+                .data(),
+                .keep(),
+                .last()
+            );
+
+            ready = 1'b1;
+            ready = 1'b0;
+
+//            stream_mpi.write(
+//                .data(),
+//                .keep(),
+//                .last()
+//            );
+//
+//            stream_axi.write(
+//                .data(),
+//                .keep(),
+//                .last()
+//            );
 
             currPos = $ftell(fID);
         end
