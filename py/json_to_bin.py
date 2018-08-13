@@ -55,7 +55,7 @@ def main(mode, filepath):
                 numHeaders = numHeaders + 1
                 h_word = stuff['header']
                 if h_word['type'] == 'ethernet':
-                    headerType = 105
+                    headerType = 1
                 else:
                     headerType = -1
 
