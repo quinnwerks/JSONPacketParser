@@ -56,6 +56,8 @@ def main(mode, filepath):
                 h_word = stuff['header']
                 if h_word['type'] == 'ethernet':
                     headerType = 1
+                elif h_word['type'] == 'mpi':
+                    headerType = 2
                 else:
                     headerType = -1
 
