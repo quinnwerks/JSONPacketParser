@@ -129,7 +129,10 @@
       ], 
       "header": {
         "info": {
-          "a": 291
+          "mac_src": 291,
+          "mac_dst": 251,
+          "dst": 25
+
         }, 
         "type": "ethernet"
       }
@@ -145,7 +148,22 @@
           "data": 3203391149, 
           "keep": 15
         }
-      ]
+      ],
+      "header":{
+        "info": {
+          "dst_rank":126,
+          "src_rank":434,
+          "packet_type":2,
+          "size":575,
+          "tage":31256,
+          "mac_addr_dst":2135,
+          "mac_addr_src":324,
+          "ip_addr_dst":231,
+          "ip_addr_src":234,
+          "last":0
+        },
+        "type": "mpi"
+      }
     }, 
     {
       "interface": "axis_net", 

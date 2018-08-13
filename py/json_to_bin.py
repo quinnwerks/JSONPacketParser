@@ -47,46 +47,47 @@ def main(mode, filepath):
     dataList = []
     numHeaders = 0
     for stuff in rawData['packets']:
-        headerType = -2
-        newData = []
-        newHeader = []
-        for outerObj in stuff:
-            if(outerObj == 'header'):
-                numHeaders = numHeaders + 1
-                h_word = stuff['header']
-                if h_word['type'] == 'ethernet':
-                    headerType = 1
-                elif h_word['type'] == 'mpi':
-                    headerType = 2
+        if stuff['type'] == "flit":
+            headerType = -2
+            newData = []
+            newHeader = []
+            for outerObj in stuff:
+                if(outerObj == 'header'):
+                    numHeaders = numHeaders + 1
+                    h_word = stuff['header']
+                    if h_word['type'] == 'ethernet':
+                        headerType = 1
+                    elif h_word['type'] == 'mpi':
+                        headerType = 2
+                    else:
+                        headerType = -1
+
+                    newHeader = []
+                    
+                    for info in h_word['info']:
+                        #print(info)
+                        newHeader.append(h_word['info'][info])
+                        #print(newHeader)
                 else:
-                    headerType = -1
+                    headerType = -2
 
-                newHeader = []
-                
-                for info in h_word['info']:
-                    #print(info)
-                    newHeader.append(h_word['info'][info])
-                    #print(newHeader)
-            else:
-                headerType = -2
+                #newHeader     
 
-            #newHeader     
-
-            if(outerObj == 'payload'):
-                for innerObj in stuff['payload']:
-                
-                    arrayObj = [0,0,0]
-                    for values in innerObj:
-                        if values == 'data':
-                            arrayObj[0] = innerObj[values]
-                        elif values == 'keep':
-                            arrayObj[1] = innerObj[values]
-                        elif values == 'last':
-                            arrayObj[2] = innerObj[values]
-                    newData = newData + arrayObj
-        dataList.append(newData)
-        typeList.append(headerType)
-        headerList.append(newHeader)
+                if(outerObj == 'payload'):
+                    for innerObj in stuff['payload']:
+                    
+                        arrayObj = [0,0,0]
+                        for values in innerObj:
+                            if values == 'data':
+                                arrayObj[0] = innerObj[values]
+                            elif values == 'keep':
+                                arrayObj[1] = innerObj[values]
+                            elif values == 'last':
+                                arrayObj[2] = innerObj[values]
+                        newData = newData + arrayObj
+            dataList.append(newData)
+            typeList.append(headerType)
+            headerList.append(newHeader)
 
 
         
