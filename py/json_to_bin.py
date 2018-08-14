@@ -1,3 +1,43 @@
+#json to bin
+#############
+#Quinn Smith#
+###################################################################
+# Creates a binary file for entry into a system verilog testbench #
+###################################################################
+
+#Binary File Convention is As Follows
+# Each field is 8 bytes 
+##########################
+#     Order of Data      #
+##########################
+#  File Start:           #
+#  Metadata              #
+#  - Size of Document    #
+#  - Number of Headers   #
+#  - Header Start        #
+#  - Header End          #
+#  - Data Start          #
+#  - Data End            # 
+#  - Wait Start          #
+#  - Wait End            #
+#  Data:                 # 
+#  - For each entry      #
+#    - Data              #
+#    - Keep              #
+#    - Last              #
+#  Header:               #
+#  - For each entry      #
+#    - Type              #
+#      -0, axi stream    # 
+#      -1, ethernet      #
+#      -2, mpi           #
+#    - Packet Start      #
+#    - Packet End        #
+#    - Info              #
+##########################
+
+
+#stuff being imported
 import os
 import sys
 import json
@@ -6,7 +46,10 @@ import collections
 import bson
 import struct
 
-def main(mode, filepath):    
+
+def main(mode, filepath): 
+
+    #get file path and create new files   
     if mode == "0":
         repoPath = os.environ.get('SHOAL_PATH')
         if repoPath is None:
@@ -26,10 +69,8 @@ def main(mode, filepath):
     if os.path.isfile(tempBinName):
         print("Warning: overwriting existing file " + tempBinName)
     fRaw = open(testFileName, "r")
-    #fTmp = open(tempFileName, "w+")
-    #fBinTmp = open(tempBinName, "w+")
-
-    #fRaw = commentRemover(fRaw_commented.read())
+    
+    #read in json data
     rawData = ""
     rawData = json.loads(fRaw.read())
 
@@ -37,9 +78,7 @@ def main(mode, filepath):
     
     headerAndData = []
     
-    # [1] header
-    # [2] header type
-    # [3] data
+    
     
     #begin extracting numerical data
     headerList = []
@@ -53,6 +92,8 @@ def main(mode, filepath):
             newHeader = []
             hasHeader = False
             for outerObj in stuff:
+
+                # process headers
                 if(outerObj == 'header'):
                     hasHeader = True
                     numHeaders = numHeaders + 1
@@ -78,8 +119,8 @@ def main(mode, filepath):
                 
                     
 
-                #newHeader     
-
+                   
+                #process data
                 if(outerObj == 'payload'):
                     for innerObj in stuff['payload']:
                     
@@ -104,7 +145,7 @@ def main(mode, filepath):
         
 
 
-    #print(headerAndData[0][1])
+    #build raw single dimentional list to be used when writing to bin file   
     totalData = 0
     totalHeader = 0
 
@@ -117,13 +158,13 @@ def main(mode, filepath):
     numBytesWord = 8
     numBytesPerBit = 8
 
-    bitsPerField = numBytesWord # this will be where the size goes
+    bitsPerField = numBytesWord 
 
     dataListBin = []
     headerBin = []
-    #get total amount of data
+    
 
-
+    #find start and end addresses for data
     for i in range(len(dataList)):
         #print(headerType)
        
@@ -137,15 +178,15 @@ def main(mode, filepath):
         endList.append(dataEnd)
         startList.append(dataStart)
     
-
+    #use data start, end for header data
     for i in range(len(headerList)):
         
-        #print(typeList)
+        
         if typeList[i] != -2:
             
-            headerBin.append(typeList[i]) #header type
-            headerBin.append(startList[i]) #place holder for data start
-            headerBin.append(endList[i]) #place holder for data end
+            headerBin.append(typeList[i]) 
+            headerBin.append(startList[i]) 
+            headerBin.append(endList[i]) 
 
             totalHeader = totalHeader +  3 * bitsPerField
 
@@ -153,8 +194,7 @@ def main(mode, filepath):
             for j in range(len(headerList[i])):
                headerBin.append(headerList[i][j])
                totalHeader = totalHeader + 1 * bitsPerField
-            #print(currBinHeader)
-            #print(dataOffset)
+            
 
     
 
@@ -165,10 +205,10 @@ def main(mode, filepath):
     print(len(headerList))
     print(len(dataList))
     
-    print(headerBin)
+    
 
 
-    #now add meta data
+    #concatanate the metadata, data and header sections
 
     totalSize = (dataOffset + 1 ) * bitsPerField + totalHeader + endList[-1] - startList[0]
 
@@ -194,6 +234,7 @@ def main(mode, filepath):
     print(totalSize)
     print(headerEnd)
     print(numHeaders)
+    
     #generate the binary using binList
     binFile = open(tempBinName, 'wb')
     for i in range(len(binList)):
