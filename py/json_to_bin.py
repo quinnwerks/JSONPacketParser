@@ -100,19 +100,61 @@ def main(mode, filepath):
                     h_word = stuff['header']
                     if h_word['type'] == 'ethernet':
                         headerType = 1
+                        newHeader = [0,0,0]
                     elif h_word['type'] == 'mpi':
                         headerType = 2
+                        newHeader = [0,0,0,0,0,0,0,0,0,0]
                     else:
                         headerType = -2
+                        newHeader = []
 
                     newHeader = []
                     
                     for info in h_word['info']:
                         newHeader.append(h_word['info'][info])
+                    #      
+                    #    if headerType == 1:
+                    #        if info == :
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == :
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == :
+                    #            newHeader[] = h_word['info'][info] 
+                    #        else:
+                    #            newHeader[] = h_word['info'][info] 
+                    #    elif headerType == 2:
+                    #        if info == :
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == :
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == :
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == :
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == : 
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == :
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == :  
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == : 
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == :
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == : 
+                    #            newHeader[] = h_word['info'][info] 
+                    #        elif info == : 
+                    #            newHeader[] = h_word['info'][info] 
+                    #        else:   
+                    #            newHeader[] = h_word['info'][info] 
+                    #    else:
+                    #        newHeader.append(h_word['info'][info])
                 
                 if(outerObj == 'interface'):
                     if (hasHeader == False) & (stuff['interface']=='axis_net'):
                         headerType = 0
+                        numHeaders = numHeaders + 1
+
                 
                 
                        
@@ -141,7 +183,9 @@ def main(mode, filepath):
         
 
 
-    print(len(typeList))                    
+    print(len(typeList)) 
+    print(headerList)
+    print(dataList)                   
         
 
 
@@ -230,6 +274,10 @@ def main(mode, filepath):
     
     binList = binList + dataListBin
     binList = binList + headerBin
+
+    print(binList[98:])
+   
+    
 
     print(totalSize)
     print(headerEnd)
