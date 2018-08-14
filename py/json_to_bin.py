@@ -51,8 +51,10 @@ def main(mode, filepath):
             headerType = -2
             newData = []
             newHeader = []
+            hasHeader = False
             for outerObj in stuff:
                 if(outerObj == 'header'):
+                    hasHeader = True
                     numHeaders = numHeaders + 1
                     h_word = stuff['header']
                     if h_word['type'] == 'ethernet':
@@ -60,16 +62,21 @@ def main(mode, filepath):
                     elif h_word['type'] == 'mpi':
                         headerType = 2
                     else:
-                        headerType = -1
+                        headerType = -2
 
                     newHeader = []
                     
                     for info in h_word['info']:
-                        #print(info)
                         newHeader.append(h_word['info'][info])
-                        #print(newHeader)
-                else:
-                    headerType = -2
+                
+                if(outerObj == 'interface'):
+                    if (hasHeader == False) & (stuff['interface']=='axis_net'):
+                        headerType = 0
+                
+                
+                       
+                
+                    
 
                 #newHeader     
 
@@ -93,7 +100,7 @@ def main(mode, filepath):
         
 
 
-                    
+    print(len(typeList))                    
         
 
 
@@ -149,16 +156,16 @@ def main(mode, filepath):
             #print(currBinHeader)
             #print(dataOffset)
 
-    #print(dataListBin)
-    #print(headerBin)
+    
 
 
 
     
         
-
+    print(len(headerList))
+    print(len(dataList))
     
-        
+    print(headerBin)
 
 
     #now add meta data
