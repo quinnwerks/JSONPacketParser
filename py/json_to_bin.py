@@ -199,10 +199,10 @@ def main(mode, filepath):
 
     dataOffset = 7 
 
-    numBytesWord = 8
+    numBytesPerWord = 8
     numBytesPerBit = 8
 
-    bitsPerField = numBytesWord 
+    numBytesPerWord = numBytesPerWord 
 
     dataListBin = []
     headerBin = []
@@ -212,12 +212,12 @@ def main(mode, filepath):
     for i in range(len(dataList)):
         #print(headerType)
        
-        dataStart = (totalData + dataOffset + 1) * bitsPerField
+        dataStart = (totalData + dataOffset + 1) * numBytesPerWord
         #print(dataStart)
         for j in range(len(dataList[i])):
             totalData = totalData + 1
             dataListBin.append(dataList[i][j])
-        dataEnd = (totalData + dataOffset + 1 ) * bitsPerField
+        dataEnd = (totalData + dataOffset + 1 ) * numBytesPerWord
         #print(dataEnd)
         endList.append(dataEnd)
         startList.append(dataStart)
@@ -232,12 +232,12 @@ def main(mode, filepath):
             headerBin.append(startList[i]) 
             headerBin.append(endList[i]) 
 
-            totalHeader = totalHeader +  3 * bitsPerField
+            totalHeader = totalHeader +  3 * numBytesPerWord
 
 
             for j in range(len(headerList[i])):
                headerBin.append(headerList[i][j])
-               totalHeader = totalHeader + 1 * bitsPerField
+               totalHeader = totalHeader + 1 * numBytesPerWord
             
 
     
@@ -255,7 +255,7 @@ def main(mode, filepath):
 
     #concatanate the metadata, data and header sections
 
-    totalSize = (dataOffset + 1 ) * bitsPerField + totalHeader + endList[-1] - startList[0]
+    totalSize = (dataOffset + 1 ) * numBytesPerWord + totalHeader + endList[-1] - startList[0]
 
     headerStart = endList[-1]
     headerEnd = headerStart  + totalHeader
