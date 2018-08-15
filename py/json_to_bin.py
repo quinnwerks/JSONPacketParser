@@ -108,47 +108,47 @@ def main(mode, filepath):
                         headerType = -2
                         newHeader = []
 
-                    newHeader = []
+                    #newHeader = []
                     
                     for info in h_word['info']:
                         newHeader.append(h_word['info'][info])
-                    #      
-                    #    if headerType == 1:
-                    #        if info == :
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == :
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == :
-                    #            newHeader[] = h_word['info'][info] 
-                    #        else:
-                    #            newHeader[] = h_word['info'][info] 
-                    #    elif headerType == 2:
-                    #        if info == :
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == :
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == :
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == :
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == : 
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == :
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == :  
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == : 
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == :
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == : 
-                    #            newHeader[] = h_word['info'][info] 
-                    #        elif info == : 
-                    #            newHeader[] = h_word['info'][info] 
-                    #        else:   
-                    #            newHeader[] = h_word['info'][info] 
-                    #    else:
-                    #        newHeader.append(h_word['info'][info])
+                          
+                        if headerType == 1:
+                            if info == 'mac_src':
+                                newHeader[0] = h_word['info'][info] 
+                            elif info == 'mac_dst':
+                                newHeader[1] = h_word['info'][info] 
+                            elif info == 'dst':
+                                newHeader[2] = h_word['info'][info] 
+                            else:
+                                print("err, ethernet")
+                                newHeader[0] = h_word['info'][info] 
+                        elif headerType == 2:
+                            if info == 'dst_rank':
+                                newHeader[0] = h_word['info'][info] 
+                            elif info == 'src_rank':
+                                newHeader[1] = h_word['info'][info] 
+                            elif info == 'packet_type':
+                                newHeader[2] = h_word['info'][info] 
+                            elif info == 'size':
+                                newHeader[3] = h_word['info'][info] 
+                            elif info == 'tag': 
+                                newHeader[4] = h_word['info'][info] 
+                            elif info == 'mac_addr_dst':
+                                newHeader[5] = h_word['info'][info] 
+                            elif info == 'mac_addr_src':  
+                                newHeader[6] = h_word['info'][info] 
+                            elif info == 'ip_addr_dst': 
+                                newHeader[7] = h_word['info'][info] 
+                            elif info == 'ip_addr_src':
+                                newHeader[8] = h_word['info'][info] 
+                            elif info == 'last': 
+                                newHeader[9] = h_word['info'][info] 
+                            else:  
+                                print("err, mpi") 
+                                newHeader[0] = h_word['info'][info] 
+                        else:
+                            newHeader.append(h_word['info'][info])
                 
                 if(outerObj == 'interface'):
                     if (hasHeader == False) & (stuff['interface']=='axis_net'):
@@ -183,9 +183,9 @@ def main(mode, filepath):
         
 
 
-    print(len(typeList)) 
-    print(headerList)
-    print(dataList)                   
+    #print(len(typeList)) 
+    #print(headerList)
+    #print(dataList)                   
         
 
 
@@ -246,10 +246,11 @@ def main(mode, filepath):
 
     
         
-    print(len(headerList))
-    print(len(dataList))
+    #print(len(headerList))
+    #print(len(dataList))
     
-    
+    print(dataListBin)
+    print(len(dataListBin)/3)
 
 
     #concatanate the metadata, data and header sections
@@ -279,8 +280,8 @@ def main(mode, filepath):
    
     
 
-    print(totalSize)
-    print(headerEnd)
+    #print(totalSize)
+    #print(headerEnd)
     print(numHeaders)
     
     #generate the binary using binList
