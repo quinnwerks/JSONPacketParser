@@ -18,9 +18,9 @@
 `define WAIT_START_ADDR_INDEX 4
 `define WAIT_END_ADDR_INDEX   5
 
-`define RAW_AXI 0
+`define RAW_AXI  0
 `define ETHERNET 1
-`define MPI 2
+`define MPI      2
 
 task automatic open_file(ref int f_id, ref string f_rel_path);
     $display("Opening file...");
@@ -38,121 +38,130 @@ module bin_parse();
     int f_id, r_status, s_status;
     longint curr_header_pos, curr_data_pos, curr_data_end_pos;
     longint f_size, num_packets, pay_data, pay_keep, pay_last, curr_header_type;
-    // ETHERNET/MPI
-    longint mac_src, mac_dst, dst;
-    // MPI SPECIFIC
-    longint dst_rank, src_rank, packet_type, size, tag, ip_dst, ip_src, last;
     reg [7:0] f_data[8];
     reg [63:0] addr[6];
+    // ETHERNET/MPI
+    longint mac_src, mac_dst, dst, dst_rank, src_rank, packet_type, size, tag, ip_dst, ip_src, last;;
 
     /**
      *  INSTANTIATIONS
      */
 
     /**
-     *  PARSE
+     *  FREAD TASKS
      */
     
     task bin_init();
-        #10
-
         r_status = $fread(f_data, f_id);
         f_size = {>>{f_data}};
 
         r_status = $fread(f_data, f_id);
         num_packets = {>>{f_data}};
-
-        curr_data_pos = $ftell(f_id);
     endtask
+
+    task gen_head();
+        r_status = $fread(f_data, f_id);
+        curr_header_type = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        curr_data_pos = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        curr_data_end_pos = {>>{f_data}};
+    endtask
+
+    task eth_head();
+        r_status = $fread(f_data, f_id);
+        mac_src = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        mac_dst = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        dst = {>>{f_data}};
+    endtask
+
+    task mpi_head();
+        r_status = $fread(f_data, f_id);
+        dst_rank = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        src_rank = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        packet_type = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        size = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        tag = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        mac_dst = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        mac_src = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        ip_dst = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        ip_src = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        last = {>>{f_data}};
+    endtask
+
+    task pay_flit();
+        r_status = $fread(f_data, f_id);
+        pay_data = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        pay_keep = {>>{f_data}};
+
+        r_status = $fread(f_data, f_id);
+        pay_last = {>>{f_data}};
+    endtask
+
+    /**
+     *  INIT BEGIN
+     */
 
     initial begin
         open_file(f_id, f_rel_path);
+        #10
         bin_init();
+        curr_data_pos = $ftell(f_id);
 
         // METADATA
         for(int i = 0; curr_data_pos < `META_ADDR_END; ++i) begin
             #10
-
             r_status = $fread(f_data, f_id);
             addr[i] = {>>{f_data}};
-            
             curr_data_pos = $ftell(f_id);
         end
-        #10
 
         // DATA & HEADERS
+        #10
         s_status = $fseek(f_id, addr[`HEAD_START_ADDR_INDEX], `SEEK_SET);
         curr_header_pos = $ftell(f_id);
 
         while(curr_header_pos < addr[`HEAD_END_ADDR_INDEX]) begin
             #10
-
-            r_status = $fread(f_data, f_id);
-            curr_header_type = {>>{f_data}};
-
-            r_status = $fread(f_data, f_id);
-            curr_data_pos = {>>{f_data}};
-
-            r_status = $fread(f_data, f_id);
-            curr_data_end_pos = {>>{f_data}};
-
+            gen_head();
             if(curr_header_type == `ETHERNET) begin
-                r_status = $fread(f_data, f_id);
-                mac_src = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                mac_dst = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                dst = {>>{f_data}};
+                eth_head();
             end
             else if(curr_header_type == `MPI) begin
-                r_status = $fread(f_data, f_id);
-                dst_rank = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                src_rank = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                packet_type = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                size = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                tag = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                mac_dst = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                mac_src = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                ip_dst = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                ip_src = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                last = {>>{f_data}};
+                mpi_head();
             end
             #10
             curr_header_pos = $ftell(f_id); // NEXT HEADER
-
             s_status = $fseek(f_id, curr_data_pos, `SEEK_SET);
             while(curr_data_pos < curr_data_end_pos) begin
                 #10
-
-                r_status = $fread(f_data, f_id);
-                pay_data = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                pay_keep = {>>{f_data}};
-
-                r_status = $fread(f_data, f_id);
-                pay_last = {>>{f_data}};
-
+                pay_flit();
                 curr_data_pos = $ftell(f_id);
             end
             s_status = $fseek(f_id, curr_header_pos, `SEEK_SET);
