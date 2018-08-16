@@ -3,12 +3,12 @@
 interface ethernet_interface
             (input clk,
             output [63:0] stream_out_data,
-            output [7:0] stream_out_keep,
+            output [7 :0] stream_out_keep,
             output stream_out_last,
             output stream_out_valid,
             input  stream_out_ready,
             input [63:0] stream_in_data,
-            input [7:0] stream_in_keep,
+            input [7 :0] stream_in_keep,
             input stream_in_last,
             input stream_in_valid,
             input stream_in_ready  

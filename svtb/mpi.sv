@@ -286,6 +286,22 @@ interface mpi_interface
     
 
     endtask
+
+    task write_header_eth(
+        input mac_addr_dst,
+        input mac_addr_src,
+        input dst_rank
+        );
+
+        stream.write_header(
+            .mac_addr_dst(mac_addr_dst),
+            .mac_addr_src(mac_addr_src),
+            //.ip_addr_dst(ip_addr_dst),
+            //.ip_addr_src(ip_addr_src),
+            .dst(dst_rank)
+            );
+
+    endtask
     
     task write(input [63:0] data,
                input [7:0] keep,
