@@ -251,8 +251,10 @@ def main(mode, filepath):
     binList = binList + dataListBin
     binList = binList + headerBin
 
+    print("The Entire Binary:")
     print(binList)
-    print(numHeaders)
+    print("Number of Headers: " + str(numHeaders))
+    print("Length of the binary (bytes): "+ str(len(binList)*8))
     
     #generate the binary using binList
     binFile = open(tempBinName, 'wb')
