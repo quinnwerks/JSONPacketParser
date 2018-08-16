@@ -94,10 +94,17 @@ def main(mode, filepath):
 
     
     #begin extracting numerical data
+
+    #list of headers
     headerList = []
+    #list of header types
     typeList = []
+    #list of data
     dataList = []
+
+    #total number of headers
     numHeaders = 0
+
     for stuff in rawData['packets']:
         if stuff['type'] == "flit":
             headerType = ERR_TYPE
@@ -167,13 +174,6 @@ def main(mode, filepath):
                     if (hasHeader == False) & (stuff['interface']=='axis_net'):
                         headerType = AXI_TYPE
                         numHeaders = numHeaders + 1
-
-                
-                
-                       
-                
-                    
-
                    
                 #process data
                 if(outerObj == 'payload'):
@@ -193,22 +193,16 @@ def main(mode, filepath):
             headerList.append(newHeader)
 
 
-        
-
-
-    #print(len(typeList)) 
-    #print(headerList)
-    #print(dataList)                   
-        
-
-
     #build raw single dimentional list to be used when writing to bin file   
     totalData = 0
     totalHeader = 0
-
+    
+    #keeps track of start and end addresses of each field
     endList = []
     startList = []
     
+    #lists for data and headers respectively, 
+    #in one dimentional form to be added to bin
     dataListBin = []
     headerBin = []
     
@@ -242,24 +236,9 @@ def main(mode, filepath):
 
             for j in range(len(headerList[i])):
                headerBin.append(headerList[i][j])
-               totalHeader = totalHeader + 1 * NUM_BYTES_WORD
-            
-
-    
-
-
-
-    
-        
-    #print(len(headerList))
-    #print(len(dataList))
-    
-    print(dataListBin)
-    print(len(dataListBin)/3)
-
+               totalHeader = totalHeader + 1 * NUM_BYTES_WORD  
 
     #concatanate the metadata, data and header sections
-
     totalSize = (DATA_OFFSET + 1 ) * NUM_BYTES_WORD + totalHeader + endList[-1] - startList[0]
 
     headerStart = endList[-1]
