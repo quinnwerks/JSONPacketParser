@@ -124,7 +124,7 @@ def main(mode, filepath):
                         newHeader = []
                     
                     for info in h_word['info']:
-                        newHeader.append(h_word['info'][info])
+                        #newHeader.append(h_word['info'][info])
                           
                         if headerType == 1:
                             if info == 'mac_src':
