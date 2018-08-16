@@ -46,11 +46,7 @@ import collections
 import struct
 
 
-def main(mode, filepath): 
-
-
-    
-
+def main(mode, filepath):    
     #get file path and create new files   
     if mode == "0":
         repoPath = os.environ.get('SHOAL_PATH')
@@ -85,7 +81,6 @@ def main(mode, filepath):
     AXI_TYPE = 0
     ETHERNET_TYPE = 1
     MPI_TYPE = 2
-
     ERR_TYPE = -2 
 
     #Number of fields defined in metadata
@@ -94,7 +89,6 @@ def main(mode, filepath):
 
     
     #begin extracting numerical data
-
     #list of headers
     headerList = []
     #list of header types
@@ -127,8 +121,6 @@ def main(mode, filepath):
                     else:
                         headerType = ERR_TYPE
                         newHeader = []
-
-                    #newHeader = []
                     
                     for info in h_word['info']:
                         newHeader.append(h_word['info'][info])
@@ -208,16 +200,14 @@ def main(mode, filepath):
     
 
     #find start and end addresses for data
-    for i in range(len(dataList)):
-        #print(headerType)
-       
+    for i in range(len(dataList)):       
         dataStart = (totalData + DATA_OFFSET + 1) * NUM_BYTES_WORD
-        #print(dataStart)
+
         for j in range(len(dataList[i])):
             totalData = totalData + 1
             dataListBin.append(dataList[i][j])
+            
         dataEnd = (totalData + DATA_OFFSET + 1 ) * NUM_BYTES_WORD
-        #print(dataEnd)
         endList.append(dataEnd)
         startList.append(dataStart)
     
@@ -261,11 +251,6 @@ def main(mode, filepath):
     binList = binList + headerBin
 
     print(binList[98:])
-   
-    
-
-    #print(totalSize)
-    #print(headerEnd)
     print(numHeaders)
     
     #generate the binary using binList
