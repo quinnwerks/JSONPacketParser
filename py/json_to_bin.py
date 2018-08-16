@@ -43,11 +43,13 @@ import sys
 import json
 import re
 import collections
-import bson
 import struct
 
 
 def main(mode, filepath): 
+
+
+    
 
     #get file path and create new files   
     if mode == "0":
@@ -79,6 +81,17 @@ def main(mode, filepath):
     headerAndData = []
     
     
+    #Define some constants
+    AXI_TYPE = 0
+    ETHERNET_TYPE = 1
+    MPI_TYPE = 2
+
+    ERR_TYPE = -2 
+
+    #Number of fields defined in metadata
+    DATA_OFFSET = 7
+    NUM_BYTES_WORD = 8
+
     
     #begin extracting numerical data
     headerList = []
@@ -87,7 +100,7 @@ def main(mode, filepath):
     numHeaders = 0
     for stuff in rawData['packets']:
         if stuff['type'] == "flit":
-            headerType = -2
+            headerType = ERR_TYPE
             newData = []
             newHeader = []
             hasHeader = False
@@ -99,13 +112,13 @@ def main(mode, filepath):
                     numHeaders = numHeaders + 1
                     h_word = stuff['header']
                     if h_word['type'] == 'ethernet':
-                        headerType = 1
+                        headerType = ETHERNET_TYPE
                         newHeader = [0,0,0]
                     elif h_word['type'] == 'mpi':
-                        headerType = 2
+                        headerType = MPI_TYPE
                         newHeader = [0,0,0,0,0,0,0,0,0,0]
                     else:
-                        headerType = -2
+                        headerType = ERR_TYPE
                         newHeader = []
 
                     #newHeader = []
@@ -152,7 +165,7 @@ def main(mode, filepath):
                 
                 if(outerObj == 'interface'):
                     if (hasHeader == False) & (stuff['interface']=='axis_net'):
-                        headerType = 0
+                        headerType = AXI_TYPE
                         numHeaders = numHeaders + 1
 
                 
@@ -196,14 +209,6 @@ def main(mode, filepath):
     endList = []
     startList = []
     
-
-    dataOffset = 7 
-
-    numBytesPerWord = 8
-    numBytesPerBit = 8
-
-    numBytesPerWord = numBytesPerWord 
-
     dataListBin = []
     headerBin = []
     
@@ -212,12 +217,12 @@ def main(mode, filepath):
     for i in range(len(dataList)):
         #print(headerType)
        
-        dataStart = (totalData + dataOffset + 1) * numBytesPerWord
+        dataStart = (totalData + DATA_OFFSET + 1) * NUM_BYTES_WORD
         #print(dataStart)
         for j in range(len(dataList[i])):
             totalData = totalData + 1
             dataListBin.append(dataList[i][j])
-        dataEnd = (totalData + dataOffset + 1 ) * numBytesPerWord
+        dataEnd = (totalData + DATA_OFFSET + 1 ) * NUM_BYTES_WORD
         #print(dataEnd)
         endList.append(dataEnd)
         startList.append(dataStart)
@@ -226,18 +231,18 @@ def main(mode, filepath):
     for i in range(len(headerList)):
         
         
-        if typeList[i] != -2:
+        if typeList[i] != ERR_TYPE:
             
             headerBin.append(typeList[i]) 
             headerBin.append(startList[i]) 
             headerBin.append(endList[i]) 
 
-            totalHeader = totalHeader +  3 * numBytesPerWord
+            totalHeader = totalHeader +  3 * NUM_BYTES_WORD
 
 
             for j in range(len(headerList[i])):
                headerBin.append(headerList[i][j])
-               totalHeader = totalHeader + 1 * numBytesPerWord
+               totalHeader = totalHeader + 1 * NUM_BYTES_WORD
             
 
     
@@ -255,7 +260,7 @@ def main(mode, filepath):
 
     #concatanate the metadata, data and header sections
 
-    totalSize = (dataOffset + 1 ) * numBytesPerWord + totalHeader + endList[-1] - startList[0]
+    totalSize = (DATA_OFFSET + 1 ) * NUM_BYTES_WORD + totalHeader + endList[-1] - startList[0]
 
     headerStart = endList[-1]
     headerEnd = headerStart  + totalHeader
