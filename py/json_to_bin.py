@@ -251,7 +251,7 @@ def main(mode, filepath):
     binList = binList + dataListBin
     binList = binList + headerBin
 
-    print(binList[98:])
+    print(binList)
     print(numHeaders)
     
     #generate the binary using binList
