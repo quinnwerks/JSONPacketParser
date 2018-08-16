@@ -1,6 +1,7 @@
-#json to bin
-#############
-#Quinn Smith#
+###############
+# JSON to Bin #
+###############
+# Quinn Smith #
 ###################################################################
 # Creates a binary file for entry into a system verilog testbench #
 ###################################################################
