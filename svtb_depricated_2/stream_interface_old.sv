@@ -1,7 +1,7 @@
 interface axi_stream
             #(parameter DATA_WIDTH = 64,
-              parameter DEST_WIDTH = 8,
-              parameter USER_WIDTH = 8
+              parameter DEST_WIDTH = 7,
+              parameter USER_WIDTH = 7
             )
             (input clk,
              output reg [DATA_WIDTH - 1:0] data,

@@ -1,5 +1,8 @@
 `timescale 1 ns/ 1ps
 
+`include "../../svtb/mpi.sv"
+`include "../../svtb/utility.sv"
+
 `define SEEK_SET 0
 `define SEEK_CUR 1
 `define SEEK_END 2
@@ -31,12 +34,13 @@ task automatic close_file(ref int f_id);
 endtask
 
 module bin_stream(
-    input reg [0:0] ack,
-    output reg [0:0] ready_ack,
+    //input reg [0:0] ack,
+    //output reg [0:0] ready_ack,
+    input clk,
     // payload
-    output reg [63:0] pay_data,
-    output reg [7:0] pay_keep,
-    output reg [0:0] pay_last,
+    output reg [63:0] pay_data_out,
+    output reg [7:0] pay_keep_out,
+    output reg [0:0] pay_last_out,
     // header info
     output reg [47:0] mac_src,
     output reg [47:0] mac_dst,
@@ -58,11 +62,27 @@ module bin_stream(
     int f_id, r_status, s_status;
     longint curr_header_pos, curr_data_pos, curr_data_end_pos;
     longint f_size, num_packets, curr_data;
-    //longint pay_data, pay_keep, pay_last, curr_header_type;
+    reg [63:0] pay_data_in;
+    reg [7:0] pay_keep_in;
+    reg [0:0] pay_last_in;
     reg [7:0] f_data[8];
     reg [63:0] addr[6];
-    // ETHERNET/MPI
-    //longint mac_src, mac_dst, dst, dst_rank, src_rank, packet_type, size, tag, ip_dst, ip_src, last;
+    reg [0:0] ready;
+    reg [0:0] valid;
+
+    mpi_interface stream_mpi_tb(
+        .clk(clk),
+        .stream_out_data(pay_data_out),
+        .stream_out_keep(pay_keep_out),
+        .stream_out_last(pay_last_out),
+        .stream_out_valid(valid),
+        .stream_out_ready(ready),
+        .stream_in_data(pay_data_in),
+        .stream_in_keep(pay_keep_in),
+        .stream_in_last(pay_last_in),
+        .stream_in_valid(1),
+        .stream_in_ready(ready)
+    );
 
     /**
      *  FREAD TASKS
@@ -146,15 +166,15 @@ module bin_stream(
     task pay_flit();
         r_status = $fread(f_data, f_id);
         curr_data = {>>{f_data}};
-        pay_data = curr_data[63:0];
+        pay_data_in = curr_data[63:0];
 
         r_status = $fread(f_data, f_id);
         curr_data = {>>{f_data}};
-        pay_keep = curr_data[7:0];
+        pay_keep_in = curr_data[7:0];
 
         r_status = $fread(f_data, f_id);
         curr_data = {>>{f_data}};
-        pay_last = curr_data[0:0];
+        pay_last_in = curr_data[0:0];
     endtask
 
     /**
@@ -162,50 +182,65 @@ module bin_stream(
      */
 
     initial begin
+        #30
         done = 0;
+        ready = 1;
         open_file(f_id, f_rel_path);
-        //#10
+        
         bin_init();
         curr_data_pos = $ftell(f_id);
 
         // METADATA
         for(int i = 0; curr_data_pos < `META_ADDR_END; ++i) begin
-            //#10
             r_status = $fread(f_data, f_id);
             addr[i] = {>>{f_data}};
             curr_data_pos = $ftell(f_id);
         end
 
         // DATA & HEADERS
-        //#10
         s_status = $fseek(f_id, addr[`HEAD_START_ADDR_INDEX], `SEEK_SET);
         curr_header_pos = $ftell(f_id);
 
         while(curr_header_pos < addr[`HEAD_END_ADDR_INDEX]) begin
-            //#10
-            wait (ack == 1);
             gen_head();
+
             if(curr_header_type == `ETHERNET) begin
                 eth_head();
+                stream_mpi_tb.write_header_eth(
+                    .mac_addr_dst(mac_dst),
+                    .mac_addr_src(mac_src),
+                    .dst(dst)
+                );
             end
+
             else if(curr_header_type == `MPI) begin
                 mpi_head();
+                stream_mpi_tb.mpi_send_header(
+                    .dst_rank(dst_rank), 
+                    .src_rank(src_rank), 
+                    .size(size),
+                    .mac_addr_dst(mac_dst),
+                    .mac_addr_src(mac_src),
+                    .ip_addr_dst(ip_dst),
+                    .ip_addr_src(ip_src)
+                );
             end
-            //#10
+
             curr_header_pos = $ftell(f_id); // NEXT HEADER
             s_status = $fseek(f_id, curr_data_pos, `SEEK_SET);
+
             while(curr_data_pos < curr_data_end_pos) begin
-                //#10
                 pay_flit();
+                stream_mpi_tb.write(
+                    .data(pay_data_in),
+                    .keep(pay_keep_in),
+                    .last(pay_last_in)
+                );
                 curr_data_pos = $ftell(f_id);
             end
-            ready_ack = 1;
-            #10
-            ready_ack = 0;
+
             s_status = $fseek(f_id, curr_header_pos, `SEEK_SET);
         end
-
-        //#10
         done = 1;
         close_file(f_id);
     end

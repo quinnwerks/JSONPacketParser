@@ -195,25 +195,25 @@ interface mpi_interface
                    .last(1'b0)
                    );
 
-//          write(.data(64'd0),
-//                .keep(8'hff),
-//                .last(1'b1)
-//               );   
+          write(.data(64'd0),
+                .keep(8'hff),
+                .last(1'b1)
+               );   
 
-//        stream.wait_for_header(
-//                           .mac_addr_dst(mac_addr_src),
-//                           .mac_addr_src(mac_addr_dst),
-//                           .ip_addr_dst(ip_addr_src),
-//                           .ip_addr_src(ip_addr_dst),
-//                           .dst(src_rank)
-//                           );
+        stream.wait_for_header(
+                           .mac_addr_dst(mac_addr_src),
+                           .mac_addr_src(mac_addr_dst),
+                           .ip_addr_dst(ip_addr_src),
+                           .ip_addr_src(ip_addr_dst),
+                           .dst(src_rank)
+                           );
         //wait for the right clr 2 send  
-//        wait(
-//         stream_in_data[31:24] == C_CLR2SND_PACKET && 
-//         stream_in_data[23:16] == dst_rank[7:0] && 
-//         stream_in_data[7:0] == src_rank &&
-//         stream_in_valid && 
-//         stream_in_ready); 
+        wait(
+         stream_in_data[31:24] == C_CLR2SND_PACKET && 
+         stream_in_data[23:16] == dst_rank[7:0] && 
+         stream_in_data[7:0] == src_rank &&
+         stream_in_valid && 
+         stream_in_ready); 
     endtask
 
 
@@ -251,22 +251,6 @@ interface mpi_interface
                         
     endtask
 
-
-    task write_header_eth(
-                    input [47:0] mac_addr_dst,  
-                    input [47:0] mac_addr_src,
-                    input [7:0] dst
-                    );
-
-        stream.write_header(
-            .mac_addr_dst(mac_addr_dst),
-            .mac_addr_src(mac_addr_src),
-            .dst(dst)
-            );
-            
-    endtask
-
-
     task write_header(
                     input [15:0] dst_rank, 
                     input [7:0] src_rank, 
@@ -300,6 +284,22 @@ interface mpi_interface
               .last(last)
               );
     
+
+    endtask
+
+    task write_header_eth(
+        input mac_addr_dst,
+        input mac_addr_src,
+        input dst_rank
+        );
+
+        stream.write_header(
+            .mac_addr_dst(mac_addr_dst),
+            .mac_addr_src(mac_addr_src),
+            //.ip_addr_dst(ip_addr_dst),
+            //.ip_addr_src(ip_addr_src),
+            .dst(dst_rank)
+            );
 
     endtask
     

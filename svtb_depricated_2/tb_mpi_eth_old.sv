@@ -31,8 +31,8 @@ module mpi_eth_stimulate
                      input [0:0] last,
                      input [63:0] curr_header_type,
                      input [0:0] done,
-                     output reg [0:0] ack,
-                     input reg [0:0] ready_ack
+                     //output reg [0:0] ack,
+                     //input reg [0:0] ready_ack
                     );
 
     `include "utility.sv"
@@ -118,10 +118,10 @@ module mpi_eth_stimulate
 //        size = 16'd2;
         while(done != 1) begin
             cont = 1;
-            ack = 1;
-            #10
-            ack = 0;
-            wait(ready_ack == 1)
+            //ack = 1;
+            //#10
+            //ack = 0;
+            //wait(ready_ack == 1)
             // AXI
             if(curr_header_type == 0) begin
                 $display("WRITING AXI");

@@ -1,15 +1,15 @@
 `timescale 1 ns/ 1ps
 
 `include "binary_util.sv"
-`include "../../svtb/tb_mpi_eth.sv"
+//`include "../../svtb/tb_mpi_eth.sv"
 
 module bin_tb();
     
     reg clk;
     reg resetn;
 
-    reg [0:0] ack;
-    reg [0:0] ready_ack;
+    //reg [0:0] ack;
+    //reg [0:0] ready_ack;
 
     //from stimulus
     reg [7:0] stream_in_KEEP;
@@ -58,12 +58,13 @@ module bin_tb();
     end
     
     // binary_util.sv
-    bin_stream streamer(
-        .ack(ack),
-        .ready_ack(ready_ack),
-        .pay_data(stream_out_DATA),
-        .pay_keep(stream_out_KEEP),
-        .pay_last(stream_out_LAST),
+    bin_stream stream_binary(
+        //.ack(ack),
+        //.ready_ack(ready_ack),
+        .clk(clk),
+        .pay_data_out(stream_out_DATA),
+        .pay_keep_out(stream_out_KEEP),
+        .pay_last_out(stream_out_LAST),
         .mac_src(mac_src),
         .mac_dst(mac_dst),
         .dst(dst),
@@ -79,6 +80,7 @@ module bin_tb();
         .done(done)
     );
 
+    /*
     //choose stimulation
     mpi_eth_stimulate stimulus(
         .clk(clk),
@@ -105,10 +107,11 @@ module bin_tb();
         .ip_src(ip_src),
         .last(last),
         .curr_header_type(curr_header_type),
-        .done(done),
-        .ack(ack),
-        .ready_ack(ready_ack)
+        .done(done)
+        //.ack(ack),
+        //.ready_ack(ready_ack)
     );
+    */
 /*
    top_sim dut(
         .clk(clk),
